@@ -390,123 +390,7 @@
             line-height: 1.4;
         }
 
-        #ai-output {
-            margin-top: 10px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 12px;
-            line-height: 1.5;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        /* AI Chatbox (Lumizia) */
-        #ai-chatbox {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 320px;
-            max-width: calc(100vw - 40px);
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-radius: 18px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            z-index: 5100;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            font-size: 13px;
-        }
-        #ai-header {
-            padding: 12px 16px;
-            background: rgba(0,0,0,0.3);
-            border-top-left-radius: 18px;
-            border-top-right-radius: 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
-        }
-        #ai-orb {
-            width: 10px;
-            height: 10px;
-            background: #2e7d32;
-            border-radius: 50%;
-            box-shadow: 0 0 6px #2e7d32;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-        #ai-close-btn {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0.7;
-        }
-        #ai-close-btn:hover { opacity: 1; }
-        #ai-messages {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .ai-msg {
-            padding: 8px 12px;
-            border-radius: 16px;
-            max-width: 85%;
-            word-wrap: break-word;
-        }
-        .ai-user {
-            background: var(--accent);
-            color: white;
-            align-self: flex-end;
-        }
-        .ai-bot {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            align-self: flex-start;
-        }
-        .ai-system {
-            background: #555;
-            color: #eee;
-            text-align: center;
-            font-style: italic;
-        }
-        #ai-input-area {
-            padding: 12px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 8px;
-        }
-        #ai-input {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            background: var(--input-bg);
-            color: var(--text);
-            font-size: 13px;
-        }
-        #ai-send {
-            background: var(--accent);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 24px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* FLOATING RADIO PANEL (new) */
+        /* FLOATING RADIO PANEL (unchanged) */
         #openRadioBtn {
             position: fixed;
             right: 18px;
@@ -651,7 +535,135 @@
             #openRadioBtn { top: auto; bottom: 20px; right: 20px; }
         }
 
-        /* NEW AI GREETING POPUP (auto‑disappearing) */
+        /* NEW FLOATING AI PANEL */
+        #openAiPanelBtn {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(15,15,20,0.92);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 5000;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+        #openAiPanelBtn:hover {
+            transform: scale(1.08);
+        }
+        #floatingAiPanel {
+            position: fixed;
+            left: 20px;
+            bottom: 90px;
+            width: 340px;
+            height: 500px;
+            background: rgba(15,15,20,0.94);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 5001;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 0 30px rgba(0,0,0,0.45);
+            animation: aiPanelSlide 0.35s ease;
+        }
+        .ai-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+        }
+        .ai-panel-title {
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        #closeAiPanelBtn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #closeAiPanelBtn:hover {
+            color: #ff6b6b;
+        }
+        #aiChatMessages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ai-message {
+            background: rgba(255,255,255,0.06);
+            padding: 12px;
+            border-radius: 14px;
+            color: white;
+            animation: fadeAiMessage 0.25s ease;
+        }
+        .ai-name {
+            color: #8fd6ff;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .user-ai-message {
+            background: rgba(63,140,255,0.18);
+            padding: 12px;
+            border-radius: 14px;
+            color: white;
+            align-self: flex-end;
+            max-width: 85%;
+        }
+        .ai-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        #aiUserInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+        .ai-input-area button {
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: #3f8cff;
+            color: white;
+            cursor: pointer;
+        }
+        @keyframes aiPanelSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeAiMessage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            #floatingAiPanel {
+                width: 92%;
+                left: 4%;
+                height: 70vh;
+            }
+        }
+
+        /* AI greeting popup (auto-disappearing) */
         #aiGreetingPopup {
             position: fixed;
             left: 20px;
@@ -720,8 +732,6 @@
             border: 1px solid var(--border);
             color: var(--text);
         }
-
-        /* Legacy AI popup removed, no longer used */
     </style>
 </head>
 <body>
@@ -793,19 +803,10 @@
             <div id="report-list" style="max-height:200px; overflow-y:auto;"></div>
         </div>
 
-        <!-- AI Assistant (Lumizia) -->
-        <div class="sidebar-section">
-            <h3>🌙 Lumizia AI Assistant</h3>
-            <input type="text" id="ai-query" placeholder="Type country, area, or command..." style="margin-bottom:8px;">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="btn small primary" onclick="runMiniAI()">Analyze</button>
-                <button class="btn small" onclick="summarizeReports()">Summarize Reports</button>
-            </div>
-            <div id="ai-output">Lumizia AI ready.</div>
-        </div>
+        <!-- OLD AI ASSISTANT SECTION REMOVED (replaced by floating AI panel) -->
 
         <div class="sidebar-section"><h3>💻 Dispatch Terminal</h3>
-            <div id="terminal-panel"><p class="line">LUMINARA-OS v30 — Welcome Luminarian</p></div>
+            <div id="terminal-panel"><p class="line">LUMINARA-OS v30 — Floating AI panel added</p></div>
         </div>
 
         <!-- Windy Webcams Section -->
@@ -849,7 +850,7 @@
         <div class="alert-banner" id="alert-banner" onclick="this.style.display='none'">⚠️ ALERT</div>
     </div>
 
-    <!-- FLOATING RADIO COMPONENTS -->
+    <!-- FLOATING RADIO COMPONENTS (unchanged) -->
     <button id="openRadioBtn" title="Open Radio Communications">📻</button>
     <div id="floatingRadioPanel" style="display: none;">
         <div class="radio-header">
@@ -872,20 +873,29 @@
         </div>
     </div>
 
-    <!-- NEW AI GREETING POPUP (auto-disappearing) -->
+    <!-- NEW FLOATING AI PANEL -->
+    <button id="openAiPanelBtn">🤖</button>
+    <div id="floatingAiPanel" style="display: none;">
+        <div class="ai-panel-header">
+            <div class="ai-panel-title">🤖 Luminara AI</div>
+            <button id="closeAiPanelBtn">✕</button>
+        </div>
+        <div id="aiChatMessages">
+            <div class="ai-message">
+                <div class="ai-name">Luminara AI</div>
+                <div>Hello Luminarian. Monitoring systems active.</div>
+            </div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="aiUserInput" placeholder="Ask the AI something...">
+            <button onclick="sendAiMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- AI greeting popup (auto-disappearing) -->
     <div id="aiGreetingPopup">
         <div class="ai-header">🌙 Lumizia AI</div>
         <div id="aiGreetingText"></div>
-    </div>
-
-    <!-- AI Chatbox (Lumizia) -->
-    <div id="ai-chatbox">
-        <div id="ai-header" onclick="toggleAIChat()">
-            <div style="display:flex;align-items:center;gap:10px;"><div id="ai-orb"></div><div><div style="font-weight:700;">🌙 Lumizia AI</div><div style="font-size:11px;opacity:0.7;">Surveillance Assistant Online</div></div></div>
-            <button id="ai-close-btn" onclick="event.stopPropagation(); closeAIChatbox()">✕</button>
-        </div>
-        <div id="ai-messages"><div class="ai-msg ai-system">Hello Luminarian. Lumizia AI systems initialized.</div></div>
-        <div id="ai-input-area"><input type="text" id="ai-input" placeholder="Ask Lumizia AI..." onkeydown="if(event.key==='Enter') sendAIMessage()"><button id="ai-send" onclick="sendAIMessage()">Send</button></div>
     </div>
 </div>
 
@@ -1238,31 +1248,10 @@
     window.switchCloudCam = switchCloudCam;
     window.addEventListener("load", () => { setTimeout(() => switchCloudCam(0), 500); });
 
-    // ==================== AI FUNCTIONS ====================
-    function summarizeReports() {
-        const output = document.getElementById("ai-output");
-        if (!STATE.reports.length) { output.innerHTML = "No reports available."; return; }
-        const summary = { wildlife:0, missing:0, weather:0, fire:0, suspicious:0, patrol:0, low:0, medium:0, high:0, critical:0 };
-        STATE.reports.forEach(report => {
-            if (summary[report.type] !== undefined) summary[report.type]++;
-            if (summary[report.danger] !== undefined) summary[report.danger]++;
-        });
-        output.innerHTML = `<b>📋 Report Summary</b><br><br>🦌 Wildlife: ${summary.wildlife}<br>🔍 Missing: ${summary.missing}<br>🌪️ Weather: ${summary.weather}<br>🔥 Fires: ${summary.fire}<br>🕵️ Suspicious: ${summary.suspicious}<br>✅ Patrol: ${summary.patrol}<br><br>🟢 Low Danger: ${summary.low}<br>🟡 Medium Danger: ${summary.medium}<br>🟠 High Danger: ${summary.high}<br>🔴 Critical Danger: ${summary.critical}`;
-        terminalLog("Mini AI generated report summary");
-    }
-    function runMiniAI() {
-        const query = document.getElementById("ai-query").value.toLowerCase().trim();
-        const output = document.getElementById("ai-output");
-        if (!query) { output.innerHTML = "Please enter an area or keyword."; return; }
-        const matches = STATE.reports.filter(report => report.title.toLowerCase().includes(query) || report.desc.toLowerCase().includes(query) || report.type.toLowerCase().includes(query) || report.author.toLowerCase().includes(query));
-        if (!matches.length) { output.innerHTML = `No reports found for: <b>${query}</b>`; return; }
-        let criticalCount = 0, weatherCount = 0, fireCount = 0;
-        matches.forEach(report => { if (report.danger === "critical") criticalCount++; if (report.type === "weather") weatherCount++; if (report.type === "fire") fireCount++; });
-        output.innerHTML = `<b>🌙 Lumizia AI Analysis</b><br><br>Query: <b>${query}</b><br>Matching Reports: <b>${matches.length}</b><br><br>🔴 Critical Reports: ${criticalCount}<br>🌪️ Weather Reports: ${weatherCount}<br>🔥 Fire Reports: ${fireCount}<br><br><b>Recent Matches:</b><br><br>${matches.slice(0,5).map(report => `• ${report.title}<br><small>${report.danger.toUpperCase()} · ${report.type}</small><br><br>`).join("")}`;
-        terminalLog(`Mini AI analyzed query: ${query}`);
-    }
+    // ==================== AI FUNCTIONS (old ones removed, only floating AI panel remains) ====================
+    // We keep the AI greeting popup (auto-disappearing) and the floating AI panel.
 
-    // ==================== VOICE RECORDING ====================
+    // ==================== VOICE RECORDING (for radio) ====================
     let mediaRecorder = null, audioChunks = [], isRecording = false;
     async function toggleVoiceRecording() {
         const btn = document.getElementById("voice-btn");
@@ -1326,7 +1315,58 @@
         if (e.key === "Enter") sendFloatingRadioMessage();
     });
 
-    // ==================== NEW AI GREETING (auto-disappearing) ====================
+    // ==================== FLOATING AI PANEL ====================
+    document.getElementById("closeAiPanelBtn").onclick = () => {
+        document.getElementById("floatingAiPanel").style.display = "none";
+    };
+    document.getElementById("openAiPanelBtn").onclick = () => {
+        document.getElementById("floatingAiPanel").style.display = "flex";
+    };
+    function sendAiMessage() {
+        const input = document.getElementById("aiUserInput");
+        const chat = document.getElementById("aiChatMessages");
+        if (!input.value.trim()) return;
+        // User message
+        const userMsg = document.createElement("div");
+        userMsg.className = "user-ai-message";
+        userMsg.innerHTML = input.value;
+        chat.appendChild(userMsg);
+        // AI response (simple hardcoded for now)
+        setTimeout(() => {
+            const aiMsg = document.createElement("div");
+            aiMsg.className = "ai-message";
+            aiMsg.innerHTML = `<div class="ai-name">Luminara AI</div><div>Monitoring report: "${input.value}" has been processed.</div>`;
+            chat.appendChild(aiMsg);
+            chat.scrollTop = chat.scrollHeight;
+        }, 700);
+        input.value = "";
+        chat.scrollTop = chat.scrollHeight;
+    }
+    document.getElementById("aiUserInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendAiMessage();
+    });
+
+    // ==================== RADIO, TERMINAL, ALERTS ====================
+    function terminalLog(msg) { const term = document.getElementById('terminal-panel'); const p = document.createElement('p'); p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`; term.appendChild(p); term.scrollTop = term.scrollHeight; if (term.children.length > 60) term.removeChild(term.firstChild); }
+    function showAlert(msg) { const banner = document.getElementById('alert-banner'); banner.textContent = msg; banner.style.display = 'block'; terminalLog(`ALERT: ${msg}`); setTimeout(() => banner.style.display = 'none', 6000); }
+    function rangerLogin() { let name = document.getElementById('ranger-name-input').value.trim(); if(name) { STATE.loggedInRanger = { name }; localStorage.setItem('ranger_login', JSON.stringify(STATE.loggedInRanger)); document.getElementById('login-status').innerHTML = `✅ ${name}`; terminalLog(`Login: ${name}`); showAlert(`Welcome Luminarian ${name}`); } }
+    function simulateEmergency() { showAlert('🚨 EMERGENCY ALERT: Code Red in Sector 7'); addRadioMessage('DISPATCH', 'EMERGENCY ACTIVE'); }
+    function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); }
+    function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
+    function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('collapsed'); setTimeout(() => map.invalidateSize(), 350); }
+    function toggleNavMenu() { document.getElementById("navMenu").classList.toggle("active"); }
+    function addRadioMessage(author, msg) {
+        const box = document.getElementById("radioMessages");
+        if (box) {
+            const div = document.createElement('div');
+            div.className = "radio-msg";
+            div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    // ==================== AI GREETING POPUP (auto-disappearing) ====================
     const aiGreetingMessage = `Welcome to Luminara Command System.
 
 Weather monitoring systems online.
@@ -1352,67 +1392,6 @@ Stay alert, Luminarian.`;
         }, 10000);
     });
 
-    // ==================== RADIO, TERMINAL, ALERTS ====================
-    function terminalLog(msg) { const term = document.getElementById('terminal-panel'); const p = document.createElement('p'); p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`; term.appendChild(p); term.scrollTop = term.scrollHeight; if (term.children.length > 60) term.removeChild(term.firstChild); }
-    function showAlert(msg) { const banner = document.getElementById('alert-banner'); banner.textContent = msg; banner.style.display = 'block'; terminalLog(`ALERT: ${msg}`); setTimeout(() => banner.style.display = 'none', 6000); }
-    function rangerLogin() { let name = document.getElementById('ranger-name-input').value.trim(); if(name) { STATE.loggedInRanger = { name }; localStorage.setItem('ranger_login', JSON.stringify(STATE.loggedInRanger)); document.getElementById('login-status').innerHTML = `✅ ${name}`; terminalLog(`Login: ${name}`); showAlert(`Welcome Luminarian ${name}`); } }
-    function simulateEmergency() { showAlert('🚨 EMERGENCY ALERT: Code Red in Sector 7'); addRadioMessage('DISPATCH', 'EMERGENCY ACTIVE'); }
-    function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); }
-    function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
-    function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('collapsed'); setTimeout(() => map.invalidateSize(), 350); }
-    function toggleNavMenu() { document.getElementById("navMenu").classList.toggle("active"); }
-
-    // Dummy addRadioMessage for compatibility (used in simulateEmergency)
-    function addRadioMessage(author, msg) {
-        const box = document.getElementById("radioMessages");
-        if (box) {
-            const div = document.createElement('div');
-            div.className = "radio-msg";
-            div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-        }
-    }
-
-    // ==================== AI CHATBOX (Lumizia) ====================
-    function toggleAIChat() {
-        const box = document.getElementById("ai-chatbox");
-        box.classList.toggle("collapsed");
-        const msgs = document.getElementById("ai-messages");
-        const inputArea = document.getElementById("ai-input-area");
-        if (box.classList.contains("collapsed")) { msgs.style.display = "none"; inputArea.style.display = "none"; }
-        else { msgs.style.display = "flex"; inputArea.style.display = "flex"; }
-    }
-    function closeAIChatbox() { document.getElementById("ai-chatbox").style.display = "none"; }
-    function sendAIMessage() {
-        const input = document.getElementById("ai-input");
-        const msg = input.value.trim();
-        if (!msg) return;
-        const messagesDiv = document.getElementById("ai-messages");
-        const userDiv = document.createElement("div");
-        userDiv.className = "ai-msg ai-user";
-        userDiv.textContent = msg;
-        messagesDiv.appendChild(userDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        input.value = "";
-        let reply = "";
-        const lowerMsg = msg.toLowerCase();
-        if (lowerMsg.includes("weather")) reply = `Current weather: ${document.getElementById('w-temp').innerHTML}, wind ${document.getElementById('w-wind').innerHTML}, UV ${document.getElementById('w-uv').innerHTML}.`;
-        else if (lowerMsg.includes("report") || lowerMsg.includes("incident")) reply = `There are ${STATE.reports.length} active reports. Use "Summarize Reports" for details.`;
-        else if (lowerMsg.includes("aircraft") || lowerMsg.includes("plane")) reply = `Aircraft tracking is ${STATE.aircraftTracking ? "ON" : "OFF"}. Toggle it from the OPS menu.`;
-        else if (lowerMsg.includes("uv")) reply = `UV index is ${document.getElementById('w-uv').innerHTML}. ${document.getElementById('uv-status').innerText}`;
-        else if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) reply = `Hello Luminarian ${STATE.loggedInRanger?.name || ""}. How can I assist?`;
-        else reply = `Acknowledged. I can provide weather, report summaries, aircraft status, and more. Try asking about weather, reports, or aircraft.`;
-        setTimeout(() => {
-            const botDiv = document.createElement("div");
-            botDiv.className = "ai-msg ai-bot";
-            botDiv.textContent = reply;
-            messagesDiv.appendChild(botDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            terminalLog(`AI Chat: ${msg} → ${reply.substring(0,50)}`);
-        }, 300);
-    }
-
     // ==================== MAP CLICK HANDLER ====================
     map.on('click', async (e) => {
         document.getElementById("navMenu")?.classList.remove("active");
@@ -1430,9 +1409,7 @@ Stay alert, Luminarian.`;
         closeReportModal, saveReport, deleteReportFromModal, editReport, renderReportList,
         toggleWeatherMode, terminalLog, showAlert, addRadioMessage, fetchWeatherData,
         switchCloudCam, toggleAircraftTracking, toggleNavMenu,
-        summarizeReports, runMiniAI,
-        toggleVoiceRecording, toggleAIChat, closeAIChatbox, sendAIMessage,
-        sendFloatingRadioMessage
+        toggleVoiceRecording, sendFloatingRadioMessage, sendAiMessage
     });
 
     // ==================== INIT ====================
@@ -1442,8 +1419,8 @@ Stay alert, Luminarian.`;
         fetchWeatherData(STATE.userLat, STATE.userLng);
         refreshAllReportMarkers();
         setInterval(() => fetchWeatherData(STATE.userLat, STATE.userLng), 300000);
-        terminalLog('Luminara v30 | Floating radio, auto‑disappearing AI greeting, satellite logo');
-        showAlert('System ready. Welcome Luminarian.');
+        terminalLog('Luminara v30 | Floating AI panel added, old AI assistant removed');
+        showAlert('System ready. Use the floating 🤖 button (bottom-left) to chat with AI.');
     }
     document.getElementById('report-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('report-modal')) closeReportModal(); });
     init();
