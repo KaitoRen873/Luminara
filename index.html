@@ -445,6 +445,155 @@
             100%{opacity:0.5;}
         }
 
+        /* ================================
+           MINI WINDY CAMERA WINDOW
+        ================================ */
+        #miniCamWindow{
+            position:fixed;
+            bottom:24px;
+            left:24px;
+            width:360px;
+            height:240px;
+            background:rgba(5,15,25,0.96);
+            border-radius:18px;
+            overflow:hidden;
+            z-index:5000;
+            border:1px solid rgba(0,255,255,0.15);
+            box-shadow:0 0 25px rgba(0,255,255,0.15);
+            backdrop-filter:blur(12px);
+            display:none;
+            animation:miniCamOpen 0.35s ease;
+        }
+
+        @keyframes miniCamOpen{
+            from{
+                transform:translateY(30px) scale(0.9);
+                opacity:0;
+            }
+            to{
+                transform:translateY(0) scale(1);
+                opacity:1;
+            }
+        }
+
+        #miniCamHeader{
+            height:42px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 12px;
+            background:linear-gradient(90deg, rgba(0,255,255,0.12), rgba(0,100,255,0.08));
+            color:white;
+            font-size:13px;
+            font-weight:700;
+            letter-spacing:1px;
+        }
+
+        .miniCamButtons{
+            display:flex;
+            gap:6px;
+        }
+
+        .miniCamButtons button{
+            width:26px;
+            height:26px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            background:rgba(255,255,255,0.08);
+            color:white;
+            transition:0.2s;
+        }
+
+        .miniCamButtons button:hover{
+            background:rgba(0,255,255,0.2);
+        }
+
+        #miniCamFrame{
+            width:100%;
+            height:calc(100% - 42px);
+            border:none;
+        }
+
+        #openMiniCamBtn{
+            position:fixed;
+            bottom:24px;
+            left:24px;
+            z-index:4999;
+            padding:12px 18px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg, rgba(0,255,255,0.25), rgba(0,120,255,0.2));
+            color:white;
+            font-weight:700;
+            cursor:pointer;
+            box-shadow:0 0 18px rgba(0,255,255,0.15);
+            transition:0.25s ease;
+        }
+
+        #openMiniCamBtn:hover{
+            transform:translateY(-2px);
+        }
+
+        @media(max-width:768px){
+            #miniCamWindow{
+                width:92vw;
+                height:220px;
+                left:4vw;
+                bottom:18px;
+            }
+        }
+
+        /* ================================
+           USER LIST
+        ================================ */
+        #online-users-list{
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+
+        .user-card{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:10px 12px;
+            border-radius:14px;
+            background:linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border:1px solid rgba(255,255,255,0.05);
+            transition:0.25s ease;
+        }
+
+        .user-card:hover{
+            border-color:rgba(0,255,255,0.18);
+            transform:translateX(3px);
+        }
+
+        .user-avatar{
+            width:36px;
+            height:36px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,120,255,0.15));
+            font-size:18px;
+        }
+
+        .user-info{
+            flex:1;
+        }
+
+        .user-name{
+            color:white;
+            font-weight:700;
+        }
+
+        .user-status{
+            font-size:11px;
+            color:#66ff99;
+        }
+
         /* Tooltip */
         .tooltip {
             position: relative;
@@ -1288,6 +1437,12 @@
             </div>
         </div>
 
+        <!-- ACTIVE LUMINARIANS LIST -->
+        <div class="sidebar-section">
+            <h3>👥 ACTIVE LUMINARIANS</h3>
+            <div id="online-users-list"></div>
+        </div>
+
         <!-- OWNER / ABOUT PANEL -->
         <div class="owner-panel">
             <div class="owner-header">
@@ -1415,6 +1570,19 @@
 
 <!-- Animated Globe Widget -->
 <div id="globe-widget">🌍</div>
+
+<!-- Mini Windy Camera Window -->
+<div id="miniCamWindow">
+    <div id="miniCamHeader">
+        <span>📹 LIVE WINDY CAM</span>
+        <div class="miniCamButtons">
+            <button onclick="minimizeMiniCam()">—</button>
+            <button onclick="closeMiniCam()">✕</button>
+        </div>
+    </div>
+    <iframe id="miniCamFrame" src="https://windy.com/webcams/1706632696" allowfullscreen></iframe>
+</div>
+<button id="openMiniCamBtn" onclick="openMiniCam()">📹 CAM</button>
 
 <!-- Particle + Aurora Canvas -->
 <canvas id="bgEffects"></canvas>
@@ -2048,11 +2216,71 @@
     // ==================== TERMINAL, ALERTS, LOGIN ====================
     function terminalLog(msg) { const term = document.getElementById('terminal-panel'); const p = document.createElement('p'); p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`; term.appendChild(p); term.scrollTop = term.scrollHeight; if (term.children.length > 60) term.removeChild(term.firstChild); }
     function showAlert(msg) { const banner = document.getElementById('alert-banner'); banner.textContent = msg; banner.style.display = 'block'; terminalLog(`ALERT: ${msg}`); setTimeout(() => banner.style.display = 'none', 6000); }
-    function rangerLogin() { let name = document.getElementById('ranger-name-input').value.trim(); if(name) { STATE.loggedInRanger = { name }; localStorage.setItem('ranger_login', JSON.stringify(STATE.loggedInRanger)); document.getElementById('login-status').innerHTML = `✅ ${name}`; terminalLog(`Login: ${name}`); showAlert(`Welcome Luminarian ${name}`); } }
+    
+    // ==================== USER LIST (ACTIVE LUMINARIANS) ====================
+    let activeUsers = JSON.parse(localStorage.getItem("luminara_users") || "[]");
+    function updateUserList(){
+        const container = document.getElementById("online-users-list");
+        if(!container) return;
+        container.innerHTML = "";
+        activeUsers.forEach(user => {
+            container.innerHTML += `
+                <div class="user-card">
+                    <div class="user-avatar">🦊</div>
+                    <div class="user-info">
+                        <div class="user-name">${escapeHtml(user)}</div>
+                        <div class="user-status">ONLINE</div>
+                    </div>
+                </div>
+            `;
+        });
+        if(activeUsers.length === 0) {
+            container.innerHTML = '<div style="color:#8fa3bf; padding:8px; text-align:center;">No active Luminarians</div>';
+        }
+    }
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function rangerLogin() {
+        let name = document.getElementById('ranger-name-input').value.trim();
+        if(name) {
+            STATE.loggedInRanger = { name };
+            localStorage.setItem('ranger_login', JSON.stringify(STATE.loggedInRanger));
+            document.getElementById('login-status').innerHTML = `✅ ${name}`;
+            terminalLog(`Login: ${name}`);
+            showAlert(`Welcome Luminarian ${name}`);
+            // Add to active users list
+            if(!activeUsers.includes(name)){
+                activeUsers.push(name);
+                localStorage.setItem("luminara_users", JSON.stringify(activeUsers));
+                updateUserList();
+            }
+        }
+    }
+
     function simulateEmergency() { showAlert('🚨 EMERGENCY ALERT: Code Red in Sector 7'); addRadioMessage('DISPATCH', 'EMERGENCY ACTIVE'); }
     function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); }
     function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); if(telemetryChart) telemetryChart.update(); if(quakeChart) quakeChart.update(); if(volcanoChart) volcanoChart.update(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
     function addRadioMessage(author, msg) { const box = document.getElementById("radioMessages"); if (box) { const div = document.createElement('div'); div.className = "radio-msg"; div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`; box.appendChild(div); box.scrollTop = box.scrollHeight; } }
+
+    // ==================== MINI CAM FUNCTIONS ====================
+    function openMiniCam(){
+        document.getElementById("miniCamWindow").style.display = "block";
+        document.getElementById("openMiniCamBtn").style.display = "none";
+    }
+    function closeMiniCam(){
+        document.getElementById("miniCamWindow").style.display = "none";
+        document.getElementById("openMiniCamBtn").style.display = "block";
+    }
+    function minimizeMiniCam(){
+        document.getElementById("miniCamWindow").style.height = "42px";
+    }
 
     // ==================== SIDEBAR TOGGLE ====================
     function toggleSidebar() {
@@ -2106,7 +2334,7 @@ Stay alert, Luminarian.`;
         closeReportModal, saveReport, deleteReportFromModal, editReport, renderReportList,
         toggleWeatherMode, terminalLog, showAlert, addRadioMessage, fetchWeatherData,
         switchCloudCam, toggleAirTraffic, toggleEarthquakes, sendFloatingRadioMessage, sendAIMessage,
-        toggleSidebar
+        toggleSidebar, openMiniCam, closeMiniCam, minimizeMiniCam
     });
 
     // ==================== INIT ====================
@@ -2115,8 +2343,9 @@ Stay alert, Luminarian.`;
         startGPSTracking();
         fetchWeatherData(STATE.userLat, STATE.userLng);
         refreshAllReportMarkers();
+        updateUserList();  // Initialize user list
         setInterval(() => fetchWeatherData(STATE.userLat, STATE.userLng), 300000);
-        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded');
+        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded | Mini cam & user list added');
         showAlert('System ready. Use top-left buttons for controls.');
     }
     document.getElementById('report-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('report-modal')) closeReportModal(); });
