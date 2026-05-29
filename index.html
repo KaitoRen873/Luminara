@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>🛰️ Luminara | Windy Live Cams + Weather Patrol</title>
+    <title>🛰️ Luminara | AI Toggle + Seismic + Volcano</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -29,7 +29,7 @@
             --warning: #f57c00;
             --success: #388e3c;
             --info: #1976d2;
-            --sidebar-width: 380px;
+            --sidebar-width: 480px;
             --radius: 14px;
             --radius-sm: 8px;
             --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -67,113 +67,382 @@
             position: relative;
         }
 
-        /* Sidebar */
-        #sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            transition: all var(--transition);
-            box-shadow: var(--shadow);
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        #sidebar.collapsed {
-            min-width: 0;
-            width: 0;
-            padding: 0;
-            border: none;
-            overflow: hidden;
-        }
-        #sidebar-toggle {
-            position: absolute;
-            left: var(--sidebar-width);
-            top: 12px;
-            z-index: 1001;
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow);
-            color: var(--text);
-            transition: all var(--transition);
-        }
-        #sidebar.collapsed~#sidebar-toggle { left: 8px; }
+        /* ================================
+           LUMINARA SIDEBAR UI UPGRADE (RIGHT SIDE)
+        ================================ */
+        #sidebar{
+            position:fixed;
+            right:0;
+            top:0;
+            width:320px;
+            min-width:320px;
+            height:100vh;
+            z-index:1200;
 
-        .sidebar-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .sidebar-header h1 {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-        .sidebar-header h1 span {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(5,15,25,0.95),
+                    rgba(8,20,35,0.92)
+                );
+
+            backdrop-filter: blur(18px);
+            border-left:1px solid rgba(255,255,255,0.08);
+
+            overflow-y:auto;
+            overflow-x:hidden;
+
+            transition:0.35s ease;
+
+            box-shadow:
+                0 0 30px rgba(0,255,255,0.08),
+                inset 0 0 40px rgba(0,180,255,0.04);
         }
 
-        /* Sidebar sections fade‑in */
-        .sidebar-section {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            animation: fadePanel 0.5s ease;
-        }
-        @keyframes fadePanel {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Smooth Scroll */
+        #sidebar::-webkit-scrollbar{
+            width:4px;
         }
 
-        .sidebar-section h3 {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .flex-grow {
-            flex-grow: 1;
-            overflow-y: auto;
-            min-height: 100px;
+        #sidebar::-webkit-scrollbar-thumb{
+            background:rgba(0,255,255,0.3);
+            border-radius:10px;
         }
 
-        /* Hover effects for cards, buttons, sections */
-        .sidebar-section,
-        .weather-card,
-        .report-item,
-        .btn,
-        .nav-toggle {
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        /* Collapse */
+        #sidebar.collapsed{
+            transform:translateX(100%);
         }
-        .sidebar-section:hover,
-        .weather-card:hover,
-        .report-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+
+        /* Sidebar Toggle Button */
+        #sidebar-toggle{
+            position:fixed;
+            right:330px;
+            top:16px;
+            z-index:1400;
+            width:48px;
+            height:48px;
+            border-radius:14px;
+            border:none;
+            background:rgba(10,20,35,0.92);
+            color:white;
+            cursor:pointer;
+            transition:0.3s ease;
+            backdrop-filter:blur(12px);
+            box-shadow:0 0 20px rgba(0,255,255,0.15);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:24px;
         }
-        .btn:hover,
-        .nav-toggle:hover {
-            transform: scale(1.04);
-            box-shadow: 0 0 18px rgba(46, 125, 50, 0.45);
+
+        #sidebar.collapsed + #sidebar-toggle{
+            right:16px;
+        }
+
+        /* ================================
+           HEADER
+        ================================ */
+        .sidebar-header{
+            padding:22px 18px;
+            border-bottom:1px solid rgba(255,255,255,0.08);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,255,255,0.08),
+                    transparent
+                );
+
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        /* Fox Logo */
+        .logo{
+            width:58px;
+            height:58px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            border-radius:18px;
+
+            font-size:34px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,255,255,0.15),
+                    rgba(0,120,255,0.1)
+                );
+
+            box-shadow:
+                0 0 20px rgba(0,255,255,0.2);
+        }
+
+        /* Title */
+        .sidebar-header h1{
+            font-size:1.5rem;
+            color:white;
+            letter-spacing:2px;
+            font-weight:800;
+        }
+
+        .sidebar-header h1 span{
+            display:block;
+
+            font-size:0.72rem;
+            margin-top:4px;
+
+            color:rgba(255,255,255,0.55);
+            letter-spacing:1px;
+        }
+
+        /* ================================
+           SECTIONS
+        ================================ */
+        .sidebar-section{
+            padding:14px 16px;
+            margin:10px 12px;
+
+            border-radius:18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.04),
+                    rgba(255,255,255,0.02)
+                );
+
+            border:1px solid rgba(255,255,255,0.05);
+
+            box-shadow:
+                inset 0 0 20px rgba(255,255,255,0.02),
+                0 0 20px rgba(0,255,255,0.02);
+
+            transition:0.25s ease;
+        }
+
+        /* Hover Glow */
+        .sidebar-section:hover{
+            transform:translateY(-2px);
+
+            border-color:rgba(0,255,255,0.18);
+
+            box-shadow:
+                0 0 25px rgba(0,255,255,0.08);
+        }
+
+        /* Section Titles */
+        .sidebar-section h3{
+            font-size:0.78rem;
+            letter-spacing:3px;
+            text-transform:uppercase;
+
+            margin-bottom:12px;
+
+            color:rgba(255,255,255,0.65);
+        }
+
+        /* ================================
+           WEATHER CARDS
+        ================================ */
+        .weather-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+        }
+
+        .weather-card{
+            padding:16px 10px;
+
+            border-radius:14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.06),
+                    rgba(255,255,255,0.02)
+                );
+
+            border:1px solid rgba(255,255,255,0.05);
+
+            text-align:center;
+
+            transition:0.25s ease;
+        }
+
+        .weather-card:hover{
+            transform:scale(1.03);
+
+            border-color:rgba(0,255,255,0.25);
+
+            box-shadow:
+                0 0 18px rgba(0,255,255,0.1);
+        }
+
+        .weather-card .val{
+            font-size:2rem;
+            font-weight:800;
+            color:white;
+        }
+
+        .weather-card .lbl{
+            margin-top:4px;
+            color:rgba(255,255,255,0.6);
+            font-size:0.85rem;
+        }
+
+        /* ================================
+           BUTTONS
+        ================================ */
+        .btn{
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,180,255,0.15),
+                    rgba(0,255,255,0.08)
+                );
+
+            border:1px solid rgba(0,255,255,0.18);
+
+            color:white;
+
+            border-radius:14px;
+
+            transition:0.25s ease;
+        }
+
+        .btn:hover{
+            transform:translateY(-2px) scale(1.02);
+
+            box-shadow:
+                0 0 18px rgba(0,255,255,0.2);
+        }
+
+        /* ================================
+           REPORTS
+        ================================ */
+        .report-item{
+            background:rgba(255,255,255,0.03);
+
+            border-radius:14px;
+
+            padding:12px;
+
+            margin-bottom:10px;
+
+            transition:0.25s ease;
+
+            border:1px solid rgba(255,255,255,0.05);
+        }
+
+        .report-item:hover{
+            border-color:rgba(0,255,255,0.18);
+
+            transform:translateX(4px);
+
+            box-shadow:
+                0 0 20px rgba(0,255,255,0.06);
+        }
+
+        /* ================================
+           TOP MAP BUTTONS (LEFT CORNER)
+        ================================ */
+        .map-overlay-top{
+            position:absolute;
+            top:16px;
+            left:16px;
+            z-index:1000;
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .map-btn{
+            background:rgba(10,20,35,0.92);
+            backdrop-filter:blur(12px);
+            border:1px solid rgba(0,255,255,0.2);
+            color:white;
+            padding:10px 14px;
+            border-radius:14px;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:500;
+            transition:0.2s;
+            box-shadow:0 0 15px rgba(0,255,255,0.1);
+        }
+
+        .map-btn:hover{
+            transform:translateY(-2px);
+            background:rgba(0,255,255,0.2);
+            box-shadow:0 0 20px rgba(0,255,255,0.3);
+        }
+
+        /* ================================
+           MOBILE FIXES
+        ================================ */
+        @media(max-width:768px){
+            #sidebar{
+                width:92vw;
+                min-width:92vw;
+            }
+            #sidebar-toggle{
+                right:14px;
+                top:14px;
+            }
+            .map-overlay-top{
+                top:10px;
+                left:10px;
+                gap:6px;
+            }
+            .map-btn{
+                padding:6px 10px;
+                font-size:12px;
+            }
+            #windy-container{
+                height:260px !important;
+            }
+        }
+
+        /* ================================
+           WINDY CONTAINER CINEMATIC UPGRADE
+        ================================ */
+        #windy-container{
+            width:100%;
+            height:420px;
+            background:#000;
+            border-radius:18px;
+            overflow:hidden;
+            position:relative;
+            box-shadow:0 0 25px rgba(0,255,255,0.12), inset 0 0 30px rgba(0,0,0,0.4);
+            border:1px solid rgba(0,255,255,0.15);
+        }
+
+        .cam-overlay{
+            position:absolute;
+            top:12px;
+            left:12px;
+            z-index:5;
+            padding:6px 12px;
+            border-radius:20px;
+            background:rgba(255,0,0,0.18);
+            color:white;
+            font-size:12px;
+            font-weight:700;
+            letter-spacing:2px;
+            backdrop-filter:blur(8px);
+            animation:pulseLive 1.5s infinite;
+            pointer-events:none;
+        }
+
+        @keyframes pulseLive{
+            0%{opacity:0.5;}
+            50%{opacity:1;}
+            100%{opacity:0.5;}
         }
 
         /* Tooltip */
@@ -203,44 +472,10 @@
             opacity: 1;
         }
 
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all var(--transition);
-            background: var(--input-bg);
-            color: var(--text);
-            font-family: var(--font);
-        }
-        .btn.primary {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-        .btn.danger {
-            background: var(--accent2);
-            color: #fff;
-        }
-        .btn.accent3 {
-            background: var(--accent3);
-            color: #fff;
-        }
-        .btn.small {
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            border-radius: 14px;
-        }
-        .btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        .flex-grow {
+            flex-grow: 1;
+            overflow-y: auto;
+            min-height: 100px;
         }
 
         /* Map */
@@ -269,40 +504,11 @@
             white-space: nowrap;
         }
 
-        /* OPS MENU (navigation panel) */
-        .nav-panel {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            z-index: 1200;
-        }
-        .nav-toggle {
-            background: rgba(0, 0, 0, 0.75);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-        .nav-menu {
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 10px;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 12px;
-            border-radius: 16px;
-            backdrop-filter: blur(14px);
-            min-width: 180px;
-        }
-        .nav-menu.active {
-            display: flex;
-        }
-        @media (max-width: 768px) {
-            .nav-panel { right: 10px; top: 10px; }
-            .nav-menu { width: 180px; }
+        /* Earthquake animation */
+        @keyframes quakePulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* Alert banner */
@@ -328,7 +534,7 @@
             50% { box-shadow: 0 0 0 18px rgba(198, 40, 40, 0); }
         }
 
-        /* Chart container */
+        /* Chart containers */
         .chart-container {
             background: var(--card-bg);
             border-radius: var(--radius-sm);
@@ -336,45 +542,9 @@
             margin-top: 6px;
             border: 1px solid var(--border);
         }
-        canvas#trendChart {
+        canvas#trendChart, canvas#telemetryChart, canvas#quakeChart, canvas#volcanoChart {
             max-height: 170px;
             width: 100%;
-        }
-
-        /* Weather grid */
-        .weather-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .weather-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-sm);
-            padding: 10px 12px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        .weather-card .val {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        /* Reports */
-        .report-item {
-            background: var(--card-bg);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all var(--transition);
-        }
-        .report-item:hover {
-            border-color: var(--accent);
-            transform: translateX(2px);
         }
 
         /* Terminal */
@@ -390,11 +560,11 @@
             line-height: 1.4;
         }
 
-        /* FLOATING RADIO PANEL (unchanged) */
+        /* Floating Radio Panel */
         #openRadioBtn {
             position: fixed;
             right: 18px;
-            top: 90px;
+            bottom: 90px;
             width: 58px;
             height: 58px;
             border-radius: 50%;
@@ -412,7 +582,7 @@
         #floatingRadioPanel {
             position: fixed;
             right: 20px;
-            top: 90px;
+            bottom: 90px;
             width: 320px;
             height: 500px;
             background: rgba(15,15,20,0.92);
@@ -531,71 +701,53 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 768px) {
-            #floatingRadioPanel { width: 92%; right: 4%; top: 80px; height: 70vh; }
-            #openRadioBtn { top: auto; bottom: 20px; right: 20px; }
+            #floatingRadioPanel { width: 92%; right: 4%; bottom: 80px; height: 70vh; }
+            #openRadioBtn { bottom: 20px; right: 20px; }
         }
 
-        /* NEW FLOATING AI PANEL */
-        #openAiPanelBtn {
+        /* AI Assistant Panel */
+        #ai-assistant-panel {
             position: fixed;
-            left: 20px;
+            right: 20px;
             bottom: 20px;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(15,15,20,0.92);
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 5000;
-            backdrop-filter: blur(10px);
-            transition: 0.3s;
-        }
-        #openAiPanelBtn:hover {
-            transform: scale(1.08);
-        }
-        #floatingAiPanel {
-            position: fixed;
-            left: 20px;
-            bottom: 90px;
             width: 340px;
-            height: 500px;
-            background: rgba(15,15,20,0.94);
+            height: 460px;
+            background: rgba(15,15,20,0.92);
+            backdrop-filter: blur(18px);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
             overflow: hidden;
+            z-index: 5000;
             display: flex;
             flex-direction: column;
-            z-index: 5001;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 0 30px rgba(0,0,0,0.45);
-            animation: aiPanelSlide 0.35s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+            animation: aiSlideIn 0.7s ease;
         }
-        .ai-panel-header {
+        #ai-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 14px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
             background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-        .ai-panel-title {
-            color: white;
-            font-weight: 700;
+        .ai-title {
             font-size: 15px;
+            font-weight: 700;
+            color: white;
         }
-        #closeAiPanelBtn {
+        #close-ai-btn {
             background: none;
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
+            transition: 0.3s;
         }
-        #closeAiPanelBtn:hover {
-            color: #ff6b6b;
+        #close-ai-btn:hover {
+            transform: scale(1.2);
         }
-        #aiChatMessages {
+        #ai-messages {
             flex: 1;
             overflow-y: auto;
             padding: 14px;
@@ -603,67 +755,89 @@
             flex-direction: column;
             gap: 10px;
         }
-        .ai-message {
+        .ai-bubble {
             background: rgba(255,255,255,0.06);
-            padding: 12px;
-            border-radius: 14px;
             color: white;
-            animation: fadeAiMessage 0.25s ease;
-        }
-        .ai-name {
-            color: #8fd6ff;
-            font-weight: 700;
-            margin-bottom: 4px;
+            padding: 10px 14px;
+            border-radius: 14px;
             font-size: 13px;
+            line-height: 1.5;
+            animation: fadeMessage 0.3s ease;
         }
-        .user-ai-message {
-            background: rgba(63,140,255,0.18);
-            padding: 12px;
-            border-radius: 14px;
+        .user-bubble {
+            background: #1976d2;
             color: white;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
             align-self: flex-end;
-            max-width: 85%;
+            max-width: 80%;
         }
-        .ai-input-area {
+        #ai-input-area {
             display: flex;
             gap: 8px;
             padding: 12px;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
-        #aiUserInput {
+        #ai-user-input {
             flex: 1;
+            padding: 10px;
             border: none;
-            outline: none;
-            padding: 10px 12px;
-            border-radius: 12px;
+            border-radius: 10px;
             background: rgba(255,255,255,0.08);
             color: white;
         }
-        .ai-input-area button {
+        #ai-input-area button {
             border: none;
             padding: 10px 14px;
-            border-radius: 12px;
-            background: #3f8cff;
-            color: white;
+            border-radius: 10px;
             cursor: pointer;
+            background: #2e7d32;
+            color: white;
+            transition: 0.3s;
         }
-        @keyframes aiPanelSlide {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        #ai-input-area button:hover {
+            transform: translateY(-2px);
         }
-        @keyframes fadeAiMessage {
+        @keyframes aiSlideIn {
+            from { transform: translateX(80px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeMessage {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 768px) {
-            #floatingAiPanel {
-                width: 92%;
-                left: 4%;
-                height: 70vh;
+            #ai-assistant-panel {
+                width: 95%;
+                right: 2.5%;
+                bottom: 10px;
+                height: 420px;
             }
         }
 
-        /* AI greeting popup (auto-disappearing) */
+        /* AI Toggle Button */
+        #open-ai-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 6000;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: #2e7d32;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+            transition: 0.3s;
+            display: none;
+        }
+        #open-ai-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* AI greeting popup */
         #aiGreetingPopup {
             position: fixed;
             left: 20px;
@@ -677,7 +851,7 @@
             color: white;
             z-index: 6000;
             box-shadow: 0 0 30px rgba(0,0,0,0.45);
-            animation: aiSlideIn 0.5s ease;
+            animation: aiSlideInLeft 0.5s ease;
             overflow: hidden;
         }
         .ai-header {
@@ -690,16 +864,13 @@
             font-size: 14px;
             line-height: 1.5;
         }
-        @keyframes aiSlideIn {
+        @keyframes aiSlideInLeft {
             from { opacity: 0; transform: translateX(-40px); }
             to { opacity: 1; transform: translateX(0); }
         }
         @keyframes aiFadeOut {
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(-30px); }
-        }
-        @media (max-width: 768px) {
-            #aiGreetingPopup { width: 90%; left: 5%; top: 80px; }
         }
 
         /* Modal */
@@ -732,14 +903,284 @@
             border: 1px solid var(--border);
             color: var(--text);
         }
+
+        /* =========================
+           CINEMATIC LOADING SCREEN
+        ========================= */
+        #loading-screen{
+            position:fixed;
+            inset:0;
+            background: radial-gradient(circle at center, #12203d 0%, #050814 60%);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            z-index:999999;
+            animation:fadeOutScreen 1s ease 4s forwards;
+        }
+        #loading-screen h1{
+            font-size:58px;
+            letter-spacing:8px;
+            color:white;
+            margin-top:20px;
+            text-shadow:0 0 30px rgba(79,195,247,0.6);
+        }
+        #loading-text{
+            margin-top:12px;
+            color:#9ba7c7;
+            font-size:14px;
+            animation:pulseText 1.4s infinite;
+        }
+        .loading-core{
+            width:130px;
+            height:130px;
+            border-radius:50%;
+            border:4px solid rgba(79,195,247,0.25);
+            border-top:4px solid #4fc3f7;
+            animation:spinCore 1.2s linear infinite;
+        }
+        @keyframes spinCore{
+            from{ transform:rotate(0deg); }
+            to{ transform:rotate(360deg); }
+        }
+        @keyframes pulseText{
+            0%,100%{ opacity:0.4; }
+            50%{ opacity:1; }
+        }
+        @keyframes fadeOutScreen{
+            to{ opacity:0; visibility:hidden; }
+        }
+        /* =========================
+           BACKGROUND EFFECTS
+        ========================= */
+        #bgEffects{
+            position:fixed;
+            inset:0;
+            width:100%;
+            height:100%;
+            z-index:-1;
+        }
+        /* =========================
+           RADAR SCAN EFFECT
+        ========================= */
+        .radar-scan{
+            position:absolute;
+            width:700px;
+            height:700px;
+            border-radius:50%;
+            background:conic-gradient(transparent 0deg, rgba(79,195,247,0.25) 60deg, transparent 120deg);
+            animation:radarRotate 5s linear infinite;
+            pointer-events:none;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+        @keyframes radarRotate{
+            from{ transform:translate(-50%, -50%) rotate(0deg); }
+            to{ transform:translate(-50%, -50%) rotate(360deg); }
+        }
+        /* =========================
+           HOLOGRAM UI
+        ========================= */
+        .sidebar-section::before,
+        .weather-card::before,
+        .btn::before{
+            content:'';
+            position:absolute;
+            top:-100%;
+            left:-100%;
+            width:220%;
+            height:220%;
+            background:linear-gradient(120deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform:rotate(25deg);
+            transition:0.8s;
+            pointer-events:none;
+        }
+        .sidebar-section:hover::before,
+        .weather-card:hover::before,
+        .btn:hover::before{
+            top:100%;
+            left:100%;
+        }
+        .sidebar-section, .weather-card, .btn{
+            position:relative;
+            overflow:hidden;
+        }
+        /* =========================
+           LIVE GLOWING PANELS
+        ========================= */
+        .sidebar-section:hover{
+            box-shadow:0 0 20px rgba(79,195,247,0.18), 0 0 40px rgba(79,195,247,0.12);
+        }
+        /* =========================
+           FLOATING ANIMATION
+        ========================= */
+        .weather-card{
+            animation:floatCard 6s ease-in-out infinite;
+        }
+        @keyframes floatCard{
+            0%,100%{ transform:translateY(0px); }
+            50%{ transform:translateY(-4px); }
+        }
+        /* =========================
+           AI GLOW
+        ========================= */
+        #ai-chatbox{
+            animation:aiGlow 4s ease infinite;
+        }
+        @keyframes aiGlow{
+            0%,100%{ box-shadow:0 0 25px rgba(79,195,247,0.18); }
+            50%{ box-shadow:0 0 40px rgba(79,195,247,0.4); }
+        }
+        /* =========================
+           GLOBE WIDGET
+        ========================= */
+        #globe-widget{
+            position:fixed;
+            bottom:24px;
+            left:24px;
+            width:90px;
+            height:90px;
+            border-radius:50%;
+            background:rgba(10,15,28,0.75);
+            backdrop-filter:blur(12px);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:46px;
+            z-index:5000;
+            animation:spinGlobe 12s linear infinite;
+            box-shadow:0 0 30px rgba(79,195,247,0.25);
+            cursor:pointer;
+        }
+        @keyframes spinGlobe{
+            from{ transform:rotate(0deg); }
+            to{ transform:rotate(360deg); }
+        }
+        /* =========================
+           LIVE WAVE TELEMETRY
+        ========================= */
+        .chart-container{
+            position:relative;
+            overflow:hidden;
+        }
+        .chart-container::after{
+            content:'';
+            position:absolute;
+            inset:0;
+            background:linear-gradient(90deg, transparent, rgba(79,195,247,0.08), transparent);
+            animation:telemetryScan 3s linear infinite;
+            pointer-events:none;
+        }
+        @keyframes telemetryScan{
+            from{ transform:translateX(-100%); }
+            to{ transform:translateX(100%); }
+        }
+
+        /* =========================
+           OWNER PANEL
+        ========================= */
+        .owner-panel{
+            margin-top:20px;
+            padding:18px;
+            border-radius:24px;
+            background:rgba(10,15,25,0.72);
+            backdrop-filter:blur(14px);
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0 0 30px rgba(79,195,247,0.08);
+            overflow:hidden;
+            position:relative;
+        }
+        .owner-panel::before{
+            content:'';
+            position:absolute;
+            top:-100%;
+            left:-100%;
+            width:220%;
+            height:220%;
+            background:linear-gradient(120deg, transparent, rgba(79,195,247,0.08), transparent);
+            transform:rotate(25deg);
+            animation:ownerSweep 8s linear infinite;
+        }
+        @keyframes ownerSweep{
+            from{ transform:translateX(-40%) rotate(25deg); }
+            to{ transform:translateX(40%) rotate(25deg); }
+        }
+        .owner-header{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            margin-bottom:18px;
+        }
+        .owner-icon{
+            width:60px;
+            height:60px;
+            border-radius:18px;
+            background:linear-gradient(135deg, rgba(79,195,247,0.25), rgba(0,255,180,0.12));
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:30px;
+            box-shadow:0 0 25px rgba(79,195,247,0.25);
+        }
+        .owner-header h2{
+            color:white;
+            font-size:22px;
+            letter-spacing:2px;
+        }
+        .owner-role{
+            color:#8fa3bf;
+            font-size:12px;
+            margin-top:4px;
+        }
+        .owner-description p{
+            color:#d6e2f0;
+            font-size:14px;
+            line-height:1.7;
+            margin-bottom:14px;
+        }
+        .owner-card{
+            margin-top:16px;
+            padding:14px;
+            border-radius:18px;
+            background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,255,255,0.08);
+            transition:0.3s;
+        }
+        .owner-card:hover{
+            transform:translateY(-3px);
+            box-shadow:0 0 25px rgba(79,195,247,0.2);
+        }
+        .owner-card h3{
+            color:white;
+            font-size:18px;
+        }
+        .owner-card span{
+            color:#8fa3bf;
+            font-size:12px;
+        }
+        @media(max-width:768px){
+            .owner-panel{ padding:14px; }
+            .owner-header h2{ font-size:18px; }
+            .owner-description p{ font-size:12px; }
+        }
     </style>
 </head>
 <body>
+
+<!-- ================= LOADING SCREEN ================= -->
+<div id="loading-screen">
+    <div class="loading-core"></div>
+    <h1>LUMINARA</h1>
+    <p id="loading-text">Initializing Ranger Systems...</p>
+</div>
+
 <div id="app-container">
+    <!-- SIDEBAR (RIGHT) -->
     <aside id="sidebar">
         <div class="sidebar-header">
             <span class="logo">🛰️</span>
-            <h1>Luminara<span>Windy Live Cams + Weather Patrol</span></h1>
+            <h1>Luminara<span>AI Toggle + Seismic + Volcano</span></h1>
         </div>
 
         <div class="sidebar-section"><h3>🔐 Luminarian Login</h3>
@@ -760,12 +1201,9 @@
             </div>
         </div>
 
-        <!-- Tooltip added to Weather Dashboard heading -->
         <div class="tooltip">
             <h3>🌡️ Weather Dashboard</h3>
-            <div class="tooltip-text">
-                Displays live environmental data including temperature, wind speed, sunrise, and visibility. Updates automatically using GPS.
-            </div>
+            <div class="tooltip-text">Displays live environmental data including temperature, wind speed, sunrise, and visibility. Updates automatically using GPS.</div>
         </div>
         <div class="sidebar-section">
             <div class="weather-grid" id="weather-grid">
@@ -781,11 +1219,36 @@
             <div id="weather-location" style="font-size:0.7rem;margin-top:6px;">📍 Loading...</div>
         </div>
 
-        <!-- UV Detection Panel -->
         <div class="sidebar-section">
             <h3>☀️ UV Detection</h3>
             <div class="weather-card"><div class="val" id="uv-index">--</div><div class="lbl">UV Index</div></div>
             <div id="uv-status" style="margin-top:8px;padding:8px;border-radius:8px;text-align:center;font-weight:bold;background:#222;color:white;">Waiting for UV data...</div>
+        </div>
+
+        <!-- LIVE TELEMETRY PANEL -->
+        <div class="sidebar-section">
+            <h3>📡 Live Telemetry</h3>
+            <div class="chart-container">
+                <canvas id="telemetryChart" height="180"></canvas>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+                <div class="weather-card"><div class="val" id="liveWind">0</div><div class="lbl">Wind km/h</div></div>
+                <div class="weather-card"><div class="val" id="liveTemp">0</div><div class="lbl">Temp °C</div></div>
+                <div class="weather-card"><div class="val" id="liveUV">0</div><div class="lbl">UV Index</div></div>
+                <div class="weather-card"><div class="val" id="liveEQ">0</div><div class="lbl">Seismic</div></div>
+            </div>
+        </div>
+
+        <!-- SEISMIC & VOLCANO MONITOR -->
+        <div class="sidebar-section">
+            <h3>🌋 Seismic & Volcano Monitor</h3>
+            <div class="chart-container"><canvas id="quakeChart" height="180"></canvas></div>
+            <div class="chart-container" style="margin-top:10px;"><canvas id="volcanoChart" height="180"></canvas></div>
+            <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                <div class="weather-card"><div class="val" id="quakeMagnitude">0.0</div><div class="lbl">Latest Magnitude</div></div>
+                <div class="weather-card"><div class="val" id="volcanoAlert">NORMAL</div><div class="lbl">Volcano Alert</div></div>
+            </div>
+            <div id="seismicFeed" style="margin-top:10px; max-height:180px; overflow-y:auto; background:rgba(0,0,0,0.25); border-radius:10px; padding:8px; font-size:12px;"></div>
         </div>
 
         <div class="sidebar-section"><h3>📊 Wind & Temp Analyzer</h3>
@@ -803,16 +1266,16 @@
             <div id="report-list" style="max-height:200px; overflow-y:auto;"></div>
         </div>
 
-        <!-- OLD AI ASSISTANT SECTION REMOVED (replaced by floating AI panel) -->
-
         <div class="sidebar-section"><h3>💻 Dispatch Terminal</h3>
-            <div id="terminal-panel"><p class="line">LUMINARA-OS v30 — Floating AI panel added</p></div>
+            <div id="terminal-panel"><p class="line">LUMINARA-OS v36 — AI Toggle Button fixed</p></div>
         </div>
 
-        <!-- Windy Webcams Section -->
+        <!-- Windy Live Cameras (UPGRADED) -->
         <div class="sidebar-section">
             <h3>📹 Windy Live Cameras</h3>
-            <div id="windy-container" style="width:100%;min-height:250px;background:#000;border-radius:10px;overflow:hidden;"></div>
+            <div id="windy-container">
+                <div class="cam-overlay">● LIVE CCTV</div>
+            </div>
             <div id="cloud-status" style="font-size:11px;color:#fff;background:rgba(0,0,0,0.8);padding:4px 8px;text-align:center;font-family:monospace;margin-top:4px;border-radius:6px;">STATUS: READY</div>
             <div id="camera-buttons" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
                 <button class="btn small" onclick="switchCloudCam(0)">🌴 Boracay</button>
@@ -824,33 +1287,49 @@
                 <button class="btn small" onclick="switchCloudCam(6)">🌥️ San Fernando</button>
             </div>
         </div>
+
+        <!-- OWNER / ABOUT PANEL -->
+        <div class="owner-panel">
+            <div class="owner-header">
+                <div class="owner-icon">🦊</div>
+                <div>
+                    <h2>About Luminara</h2>
+                    <p class="owner-role">Ranger Weather Intelligence System</p>
+                </div>
+            </div>
+            <div class="owner-description">
+                <p>Luminara is a futuristic ranger operations and weather monitoring platform designed to provide real-time environmental awareness, live surveillance, weather tracking, emergency reporting, and AI-assisted patrol support.</p>
+                <p>Built for modern explorers, rangers, responders, and environmental monitoring teams, the system combines live radar intelligence, atmospheric analysis, communication systems, and interactive mapping into one unified control center.</p>
+                <p>Developed and maintained by:</p>
+                <div class="owner-card">
+                    <h3>Kaito Shizuki Hiroma</h3>
+                    <span>Founder • Developer • System Architect</span>
+                </div>
+            </div>
+        </div>
     </aside>
 
+    <!-- SIDEBAR TOGGLE BUTTON -->
     <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
     <div id="map-container">
         <div id="map"></div>
-
-        <!-- OPS MENU (with tooltip on Radar button) -->
-        <div class="nav-panel">
-            <button class="nav-toggle" onclick="toggleNavMenu()">☰ OPS MENU</button>
-            <div class="nav-menu" id="navMenu">
-                <button class="btn small" onclick="centerOnUser()">📍 My Location</button>
-                <div class="tooltip">
-                    <button class="btn small" onclick="toggleRadar()" id="radar-btn">🌧️ Radar</button>
-                    <div class="tooltip-text">Toggles live precipitation radar overlay on the map.</div>
-                </div>
-                <button class="btn small" onclick="toggleSatellite()" id="satellite-btn">🛰️ Satellite</button>
-                <button class="btn small" id="gps-status-btn" onclick="toggleGPSTracking()">📡 GPS</button>
-                <button class="btn small" id="weatherModeBtn" onclick="toggleWeatherMode()">🌦️ Weather</button>
-            </div>
-        </div>
-
+        <div class="radar-scan"></div>
         <div class="map-overlay-bottom" id="coord-display">📍 Click map: Report (normal) | Toggle Weather Mode for weather‑at‑click</div>
         <div class="alert-banner" id="alert-banner" onclick="this.style.display='none'">⚠️ ALERT</div>
     </div>
 
-    <!-- FLOATING RADIO COMPONENTS (unchanged) -->
+    <!-- TOP MAP BUTTONS (GPS, RADAR, SATELLITE, WEATHER, TRAFFIC, QUAKES) -->
+    <div class="map-overlay-top">
+        <button class="map-btn" onclick="centerOnUser()">📍 My Location</button>
+        <button class="map-btn" onclick="toggleRadar()" id="radar-btn">🌧️ Radar</button>
+        <button class="map-btn" onclick="toggleSatellite()" id="satellite-btn">🛰️ Satellite</button>
+        <button class="map-btn" id="gps-status-btn" onclick="toggleGPSTracking()">📡 GPS</button>
+        <button class="map-btn" id="weatherModeBtn" onclick="toggleWeatherMode()">🌦️ Weather</button>
+        <button class="map-btn" onclick="toggleAirTraffic()" id="airTrafficBtn">✈️ Traffic: OFF</button>
+        <button class="map-btn" onclick="toggleEarthquakes()" id="earthquakeBtn">🌎 Quakes: OFF</button>
+    </div>
+
     <button id="openRadioBtn" title="Open Radio Communications">📻</button>
     <div id="floatingRadioPanel" style="display: none;">
         <div class="radio-header">
@@ -873,26 +1352,22 @@
         </div>
     </div>
 
-    <!-- NEW FLOATING AI PANEL -->
-    <button id="openAiPanelBtn">🤖</button>
-    <div id="floatingAiPanel" style="display: none;">
-        <div class="ai-panel-header">
-            <div class="ai-panel-title">🤖 Luminara AI</div>
-            <button id="closeAiPanelBtn">✕</button>
+    <!-- AI Assistant Panel -->
+    <div id="ai-assistant-panel">
+        <div id="ai-header">
+            <div class="ai-title">🦊 Lumizia Assistant</div>
+            <button id="close-ai-btn">✕</button>
         </div>
-        <div id="aiChatMessages">
-            <div class="ai-message">
-                <div class="ai-name">Luminara AI</div>
-                <div>Hello Luminarian. Monitoring systems active.</div>
-            </div>
-        </div>
-        <div class="ai-input-area">
-            <input type="text" id="aiUserInput" placeholder="Ask the AI something...">
-            <button onclick="sendAiMessage()">Send</button>
+        <div id="ai-messages"></div>
+        <div id="ai-input-area">
+            <input type="text" id="ai-user-input" placeholder="Ask Luminara AI...">
+            <button onclick="sendAIMessage()">Send</button>
         </div>
     </div>
 
-    <!-- AI greeting popup (auto-disappearing) -->
+    <!-- AI Toggle Button -->
+    <button id="open-ai-btn">🦊 AI</button>
+
     <div id="aiGreetingPopup">
         <div class="ai-header">🌙 Lumizia AI</div>
         <div id="aiGreetingText"></div>
@@ -938,6 +1413,12 @@
     </div>
 </div>
 
+<!-- Animated Globe Widget -->
+<div id="globe-widget">🌍</div>
+
+<!-- Particle + Aurora Canvas -->
+<canvas id="bgEffects"></canvas>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -959,16 +1440,19 @@
 <script>
     // ==================== GLOBAL STATE ====================
     const STATE = {
-        darkMode: false, sidebarOpen: true, gpsTracking: true, radarOn: false, satelliteMode: false,
+        darkMode: false, gpsTracking: true, radarOn: false, satelliteMode: false,
         userLat: 44.428, userLng: -110.588, userMarker: null, radarLayer: null,
         baseLayerOsm: null, baseLayerSatellite: null,
         reports: [], reportMarkers: [], loggedInRanger: null,
         weatherHistory: [], chart: null,
         weatherMode: false,
         tempWeatherMarker: null,
-        aircraftMarkers: [],
-        aircraftTracking: false,
-        aircraftInterval: null
+        airTrafficEnabled: false,
+        airTrafficMarkers: [],
+        airTrafficInterval: null,
+        earthquakeEnabled: false,
+        earthquakeMarkers: [],
+        quakeInterval: null
     };
 
     try { const saved = localStorage.getItem('ranger_reports'); if (saved) STATE.reports = JSON.parse(saved); } catch(e) {}
@@ -1066,46 +1550,283 @@
     function toggleWeatherMode() {
         STATE.weatherMode = !STATE.weatherMode;
         const btn = document.getElementById('weatherModeBtn');
-        btn.textContent = STATE.weatherMode ? '🌦️ Weather' : '🌦️ Weather';
-        btn.classList.toggle('active', STATE.weatherMode);
+        if(btn) btn.textContent = STATE.weatherMode ? '🌦️ Weather' : '🌦️ Weather';
         showAlert(STATE.weatherMode ? 'Weather mode ACTIVE – click map for weather' : 'Weather mode OFF – click map for reports');
         document.getElementById('coord-display').innerHTML = STATE.weatherMode ? '🌤️ WEATHER MODE: Click map for weather' : '📍 Click map: Report (normal)';
     }
 
-    // ==================== AIRCRAFT TRACKING ====================
-    const aircraftIcon = L.divIcon({ html: "✈️", className: "plane-icon", iconSize: [20,20] });
-    async function fetchAircraft() {
+    // ==================== EARTHQUAKE SYSTEM ====================
+    async function fetchEarthquakes() {
         try {
-            const response = await fetch("https://opensky-network.org/api/states/all");
-            if (!response.ok) throw new Error("OpenSky request failed");
+            const url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson";
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("USGS fetch failed");
             const data = await response.json();
-            if (!data.states) return;
-            console.log("Aircraft count:", data.states.length);
-            data.states.forEach(plane => {
-                const callsign = plane[1] || "Unknown";
-                const lon = plane[5], lat = plane[6];
-                if (lat && lon) {
-                    L.marker([lat, lon], { icon: aircraftIcon }).addTo(map).bindPopup(`<b>${callsign}</b><br>Altitude: ${plane[7] || "Unknown"} m`);
-                }
+            clearEarthquakeMarkers();
+            data.features.forEach(quake => {
+                const coords = quake.geometry.coordinates;
+                const lng = coords[0];
+                const lat = coords[1];
+                const depth = coords[2];
+                const mag = quake.properties.mag || 0;
+                const place = quake.properties.place || "Unknown location";
+                const time = new Date(quake.properties.time).toLocaleString();
+                let size = 12;
+                if (mag >= 5) size = 20;
+                if (mag >= 6) size = 28;
+                let color = "#4caf50";
+                if (mag >= 4) color = "#ff9800";
+                if (mag >= 6) color = "#f44336";
+                const quakeIcon = L.divIcon({
+                    className: "",
+                    html: `<div style="width:${size}px; height:${size}px; border-radius:50%; background:${color}; box-shadow:0 0 20px ${color}; animation: quakePulse 1.5s infinite;"></div>`,
+                    iconSize: [size, size],
+                    iconAnchor: [size/2, size/2]
+                });
+                const marker = L.marker([lat, lng], { icon: quakeIcon }).addTo(map).bindPopup(`<b>🌎 Earthquake</b><br><br>📍 ${place}<br>💥 Magnitude: ${mag}<br>📏 Depth: ${depth} km<br>🕒 ${time}`);
+                STATE.earthquakeMarkers.push(marker);
+                if (mag >= 6) showAlert(`⚠ Major earthquake detected (${mag})`);
             });
-        } catch (err) { terminalLog("Aircraft traffic unavailable"); }
-    }
-    function toggleAircraftTracking() {
-        if (STATE.aircraftTracking) {
-            if (STATE.aircraftInterval) clearInterval(STATE.aircraftInterval);
-            if (STATE.aircraftMarkers) STATE.aircraftMarkers.forEach(m => map.removeLayer(m));
-            STATE.aircraftMarkers = [];
-            STATE.aircraftTracking = false;
-            document.getElementById('aircraft-btn').textContent = "✈️ Aircraft";
-            showAlert("Aircraft tracking disabled");
-        } else {
-            STATE.aircraftTracking = true;
-            fetchAircraft();
-            STATE.aircraftInterval = setInterval(fetchAircraft, 15000);
-            document.getElementById('aircraft-btn').textContent = "✈️ Aircraft ON";
-            showAlert("Aircraft tracking enabled");
+            terminalLog(`Earthquakes loaded: ${data.features.length}`);
+        } catch (err) {
+            console.error(err);
+            terminalLog("Earthquake fetch failed");
         }
     }
+
+    function clearEarthquakeMarkers() {
+        STATE.earthquakeMarkers.forEach(marker => map.removeLayer(marker));
+        STATE.earthquakeMarkers = [];
+    }
+
+    async function toggleEarthquakes() {
+        STATE.earthquakeEnabled = !STATE.earthquakeEnabled;
+        const btn = document.getElementById("earthquakeBtn");
+        if (STATE.earthquakeEnabled) {
+            if(btn) btn.textContent = "🌎 Quakes: ON";
+            fetchEarthquakes();
+            STATE.quakeInterval = setInterval(fetchEarthquakes, 60000);
+            showAlert("Earthquake monitoring active");
+        } else {
+            if(btn) btn.textContent = "🌎 Quakes: OFF";
+            if (STATE.quakeInterval) clearInterval(STATE.quakeInterval);
+            clearEarthquakeMarkers();
+            showAlert("Earthquake monitoring disabled");
+        }
+    }
+
+    // ==================== AIR TRAFFIC SYSTEM ====================
+    function clearAirTrafficMarkers() {
+        STATE.airTrafficMarkers.forEach(marker => map.removeLayer(marker));
+        STATE.airTrafficMarkers = [];
+    }
+
+    async function fetchAirTraffic() {
+        try {
+            const bounds = map.getBounds();
+            const lamin = bounds.getSouth();
+            const lamax = bounds.getNorth();
+            const lomin = bounds.getWest();
+            const lomax = bounds.getEast();
+            const url = `https://opensky-network.org/api/states/all?lamin=${lamin}&lomin=${lomin}&lamax=${lamax}&lomax=${lomax}`;
+            const response = await fetch(url, {
+                method: "GET",
+                mode: "cors",
+                cache: "no-cache",
+                headers: { "Accept": "application/json" }
+            });
+            if (!response.ok) {
+                terminalLog("OpenSky temporarily unavailable");
+                return;
+            }
+            const data = await response.json();
+            clearAirTrafficMarkers();
+            if (!data.states) {
+                terminalLog("No aircraft nearby");
+                return;
+            }
+            data.states.forEach(plane => {
+                const lat = plane[6];
+                const lng = plane[5];
+                if (lat == null || lng == null) return;
+                const callsign = plane[1] || "Unknown";
+                const velocity = plane[9];
+                const heading = plane[10];
+                const altitude = plane[7];
+                const icon = L.divIcon({
+                    className: "",
+                    html: `<div style="transform: rotate(${heading || 0}deg); font-size:18px; color:white; text-shadow: 0 0 10px cyan;">✈</div>`,
+                    iconSize: [18, 18]
+                });
+                const marker = L.marker([lat, lng], { icon }).addTo(map).bindPopup(`
+                    <b>✈ ${callsign}</b><br>
+                    Altitude: ${altitude ? Math.round(altitude) : "Unknown"} m<br>
+                    Speed: ${velocity ? Math.round(velocity * 3.6) : "Unknown"} km/h
+                `);
+                STATE.airTrafficMarkers.push(marker);
+            });
+            terminalLog(`Aircraft tracked: ${data.states.length}`);
+        } catch (err) {
+            console.error(err);
+            terminalLog("OpenSky failed");
+            showAlert("Air traffic unavailable");
+        }
+    }
+
+    async function toggleAirTraffic() {
+        STATE.airTrafficEnabled = !STATE.airTrafficEnabled;
+        const btn = document.getElementById("airTrafficBtn");
+        if (STATE.airTrafficEnabled) {
+            if(btn) btn.textContent = "✈️ Traffic: ON";
+            fetchAirTraffic();
+            STATE.airTrafficInterval = setInterval(fetchAirTraffic, 30000);
+            showAlert("Air traffic enabled");
+        } else {
+            if(btn) btn.textContent = "✈️ Traffic: OFF";
+            if (STATE.airTrafficInterval) clearInterval(STATE.airTrafficInterval);
+            clearAirTrafficMarkers();
+            showAlert("Air traffic disabled");
+        }
+    }
+
+    map.on("moveend", () => {
+        if (STATE.airTrafficEnabled) fetchAirTraffic();
+        if (STATE.earthquakeEnabled) fetchEarthquakes();
+    });
+
+    // ==================== LIVE TELEMETRY ====================
+    const telemetryCtx = document.getElementById("telemetryChart").getContext("2d");
+    const telemetryData = {
+        labels: [],
+        datasets: [
+            { label: "Wind", data: [], borderColor: "#00c3ff", backgroundColor: "rgba(0,195,255,0.15)", tension: 0.4 },
+            { label: "Temperature", data: [], borderColor: "#ff9800", backgroundColor: "rgba(255,152,0,0.15)", tension: 0.4 },
+            { label: "UV Index", data: [], borderColor: "#ffeb3b", backgroundColor: "rgba(255,235,59,0.15)", tension: 0.4 }
+        ]
+    };
+    const telemetryChart = new Chart(telemetryCtx, {
+        type: "line",
+        data: telemetryData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 700 },
+            scales: {
+                x: { ticks: { color: getComputedStyle(document.body).getPropertyValue('--text') || "white" } },
+                y: { beginAtZero: true, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text') || "white" } }
+            },
+            plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text') || "white" } } }
+        }
+    });
+
+    function updateTelemetry() {
+        const wind = Math.floor(Math.random() * 80);
+        const temp = Math.floor(Math.random() * 18) + 20;
+        const uv = Math.floor(Math.random() * 12);
+        const seismic = (Math.random() * 5).toFixed(1);
+        const time = new Date().toLocaleTimeString();
+
+        document.getElementById("liveWind").textContent = wind;
+        document.getElementById("liveTemp").textContent = temp;
+        document.getElementById("liveUV").textContent = uv;
+        document.getElementById("liveEQ").textContent = seismic;
+
+        telemetryData.labels.push(time);
+        telemetryData.datasets[0].data.push(wind);
+        telemetryData.datasets[1].data.push(temp);
+        telemetryData.datasets[2].data.push(uv);
+
+        if (telemetryData.labels.length > 12) {
+            telemetryData.labels.shift();
+            telemetryData.datasets.forEach(dataset => dataset.data.shift());
+        }
+        telemetryChart.update();
+
+        if (uv >= 8) showAlert("☀️ EXTREME UV DETECTED");
+        if (wind >= 60) showAlert("🌪️ HIGH WIND SPEED DETECTED");
+        if (seismic >= 4.0) showAlert("🌋 SEISMIC ACTIVITY INCREASED");
+    }
+
+    setInterval(updateTelemetry, 3000);
+    updateTelemetry();
+
+    // ==================== SEISMIC & VOLCANO MONITOR ====================
+    const quakeCtx = document.getElementById("quakeChart").getContext("2d");
+    const quakeChart = new Chart(quakeCtx, {
+        type: "line",
+        data: { labels: [], datasets: [{ label: "Earthquake Magnitude", data: [], borderColor: "#ff5252", backgroundColor: "rgba(255,82,82,0.15)", tension: 0.35 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: "white" } } },
+            scales: { x: { ticks: { color: "white" } }, y: { beginAtZero: true, ticks: { color: "white" } } }
+        }
+    });
+    const volcanoCtx = document.getElementById("volcanoChart").getContext("2d");
+    const volcanoChart = new Chart(volcanoCtx, {
+        type: "bar",
+        data: { labels: [], datasets: [{ label: "Volcanic Activity", data: [], backgroundColor: "#ff9800" }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: "white" } } },
+            scales: { x: { ticks: { color: "white" } }, y: { beginAtZero: true, ticks: { color: "white" } } }
+        }
+    });
+
+    const quakeLocations = ["Japan", "Philippines", "Indonesia", "California", "Chile", "Mexico", "Turkey", "Alaska", "Papua New Guinea"];
+    const volcanoLocations = ["Mayon Volcano", "Taal Volcano", "Kanlaon Volcano", "Mount Fuji", "Krakatoa", "Mauna Loa", "Mount Etna"];
+
+    function updateSeismicSystems() {
+        const quakeMag = (Math.random() * 7).toFixed(1);
+        const volcanoLevel = Math.floor(Math.random() * 5);
+        const quakeLocation = quakeLocations[Math.floor(Math.random() * quakeLocations.length)];
+        const volcanoName = volcanoLocations[Math.floor(Math.random() * volcanoLocations.length)];
+        const time = new Date().toLocaleTimeString();
+
+        quakeChart.data.labels.push(time);
+        quakeChart.data.datasets[0].data.push(quakeMag);
+        volcanoChart.data.labels.push(time);
+        volcanoChart.data.datasets[0].data.push(volcanoLevel);
+
+        if (quakeChart.data.labels.length > 10) {
+            quakeChart.data.labels.shift();
+            quakeChart.data.datasets[0].data.shift();
+        }
+        if (volcanoChart.data.labels.length > 10) {
+            volcanoChart.data.labels.shift();
+            volcanoChart.data.datasets[0].data.shift();
+        }
+        quakeChart.update();
+        volcanoChart.update();
+
+        document.getElementById("quakeMagnitude").textContent = quakeMag;
+        let alertText = "NORMAL";
+        if (volcanoLevel >= 1) alertText = "ADVISORY";
+        if (volcanoLevel >= 3) alertText = "WARNING";
+        if (volcanoLevel >= 4) alertText = "CRITICAL";
+        document.getElementById("volcanoAlert").textContent = alertText;
+
+        const feed = document.getElementById("seismicFeed");
+        const item = document.createElement("div");
+        item.style.marginBottom = "8px";
+        item.innerHTML = `
+            🌎 <b>Earthquake</b><br>
+            Location: ${quakeLocation}<br>
+            Magnitude: ${quakeMag}<br>
+            Time: ${time}
+            <hr style="opacity:0.2;">
+            🌋 <b>Volcano Activity</b><br>
+            Volcano: ${volcanoName}<br>
+            Alert Level: ${alertText}
+        `;
+        feed.prepend(item);
+        while (feed.children.length > 8) feed.removeChild(feed.lastChild);
+
+        if (quakeMag >= 5.5) showAlert(`🌎 Strong earthquake detected in ${quakeLocation}`);
+        if (volcanoLevel >= 4) showAlert(`🌋 CRITICAL volcanic activity at ${volcanoName}`);
+    }
+
+    setInterval(updateSeismicSystems, 8000);
+    updateSeismicSystems();
 
     // ==================== REPORTS ====================
     function openReportModal(lat, lng) {
@@ -1192,12 +1913,12 @@
     let gpsWatchId = null;
     function startGPSTracking() { if(navigator.geolocation) gpsWatchId = navigator.geolocation.watchPosition(pos => { STATE.userLat = pos.coords.latitude; STATE.userLng = pos.coords.longitude; STATE.userMarker.setLatLng([STATE.userLat, STATE.userLng]); fetchWeatherData(STATE.userLat, STATE.userLng); document.getElementById('weather-location').innerHTML = `📍 ${STATE.userLat.toFixed(3)}, ${STATE.userLng.toFixed(3)}`; }, err => terminalLog('[WARN] GPS lost'), {enableHighAccuracy:true}); }
     function stopGPSTracking() { if(gpsWatchId) navigator.geolocation.clearWatch(gpsWatchId); }
-    function toggleGPSTracking() { STATE.gpsTracking = !STATE.gpsTracking; STATE.gpsTracking ? startGPSTracking() : stopGPSTracking(); document.getElementById('gps-status-btn').textContent = STATE.gpsTracking ? '📡 GPS' : '📡 GPS'; showAlert(`GPS ${STATE.gpsTracking?'ON':'OFF'}`); }
+    function toggleGPSTracking() { STATE.gpsTracking = !STATE.gpsTracking; STATE.gpsTracking ? startGPSTracking() : stopGPSTracking(); const btn = document.getElementById('gps-status-btn'); if(btn) btn.textContent = STATE.gpsTracking ? '📡 GPS' : '📡 GPS'; showAlert(`GPS ${STATE.gpsTracking?'ON':'OFF'}`); }
     function centerOnUser() { map.setView([STATE.userLat, STATE.userLng], 14); showAlert('Centered on your location'); }
-    function toggleRadar() { STATE.radarOn = !STATE.radarOn; STATE.radarOn ? STATE.radarLayer.addTo(map) : STATE.radarLayer.remove(); document.getElementById('radar-btn').textContent = STATE.radarOn ? '🌧️ Radar' : '🌧️ Radar'; terminalLog(`Radar ${STATE.radarOn?'ON':'OFF'}`); showAlert(`Radar ${STATE.radarOn?'enabled':'disabled'}`); }
-    function toggleSatellite() { STATE.satelliteMode = !STATE.satelliteMode; if(STATE.satelliteMode) { map.removeLayer(STATE.baseLayerOsm); map.addLayer(STATE.baseLayerSatellite); } else { map.removeLayer(STATE.baseLayerSatellite); map.addLayer(STATE.baseLayerOsm); } document.getElementById('satellite-btn').textContent = STATE.satelliteMode ? '🛰️ Satellite' : '🛰️ Satellite'; showAlert(`Satellite ${STATE.satelliteMode?'ON':'OFF'}`); }
+    function toggleRadar() { STATE.radarOn = !STATE.radarOn; STATE.radarOn ? STATE.radarLayer.addTo(map) : STATE.radarLayer.remove(); const btn = document.getElementById('radar-btn'); if(btn) btn.textContent = STATE.radarOn ? '🌧️ Radar' : '🌧️ Radar'; terminalLog(`Radar ${STATE.radarOn?'ON':'OFF'}`); showAlert(`Radar ${STATE.radarOn?'enabled':'disabled'}`); }
+    function toggleSatellite() { STATE.satelliteMode = !STATE.satelliteMode; if(STATE.satelliteMode) { map.removeLayer(STATE.baseLayerOsm); map.addLayer(STATE.baseLayerSatellite); } else { map.removeLayer(STATE.baseLayerSatellite); map.addLayer(STATE.baseLayerOsm); } const btn = document.getElementById('satellite-btn'); if(btn) btn.textContent = STATE.satelliteMode ? '🛰️ Satellite' : '🛰️ Satellite'; showAlert(`Satellite ${STATE.satelliteMode?'ON':'OFF'}`); }
 
-    // ==================== WINDY WEBCAMS ====================
+    // ==================== WINDY WEBCAMS (UPDATED HEIGHT) ====================
     const cloudCams = [
         { id: "1739611817", name: "Boracay - Crimson Resort" },
         { id: "1638604776", name: "Tapaz" },
@@ -1208,7 +1929,6 @@
         { id: "1793900317", name: "San Fernando" }
     ];
     let currentCloudCam = 0;
-
     function switchCloudCam(index) {
         currentCloudCam = index;
         const cam = cloudCams[index];
@@ -1216,80 +1936,31 @@
         const status = document.getElementById("cloud-status");
         if (!container || !status) return;
         status.textContent = `STATUS: LOADING ${cam.name}...`;
-        container.innerHTML = `
-            <div id="windy-webcam-container">
-                <a name="windy-webcam-timelapse-player"
-                   data-id="${cam.id}"
-                   data-play="day"
-                   data-loop="0"
-                   data-auto-play="1"
-                   data-force-full-screen-on-overlay-play="0"
-                   data-interactive="1"
-                   href="https://windy.com/webcams/${cam.id}"
-                   target="_blank">
-                    ${cam.name}
-                </a>
-            </div>
-        `;
+        // Preserve the cam-overlay div while replacing inner content
+        const overlay = container.querySelector('.cam-overlay');
+        container.innerHTML = `<div class="cam-overlay">● LIVE CCTV</div><div id="windy-webcam-container"><a name="windy-webcam-timelapse-player" data-id="${cam.id}" data-play="day" data-loop="0" data-auto-play="1" data-force-full-screen-on-overlay-play="0" data-interactive="1" href="https://windy.com/webcams/${cam.id}" target="_blank">${cam.name}</a></div>`;
         const oldScript = document.getElementById("windy-script");
         if (oldScript) oldScript.remove();
         const script = document.createElement("script");
         script.id = "windy-script";
         script.src = "https://webcams.windy.com/webcams/public/embed/v2/script/player.js";
         script.async = true;
-        script.onload = () => {
-            status.textContent = `STATUS: LIVE - ${cam.name}`;
-            terminalLog(`Windy cam loaded: ${cam.name}`);
+        script.onload = () => { 
+            status.textContent = `STATUS: LIVE - ${cam.name}`; 
+            terminalLog(`Windy cam loaded: ${cam.name}`); 
             showAlert(`📹 ${cam.name} webcam loaded`);
+            // Ensure the iframe inside windy-webcam-container gets proper styling
+            const iframe = document.querySelector('#windy-container iframe');
+            if (iframe) {
+                iframe.style.width = '100%';
+                iframe.style.height = '420px';
+                iframe.style.border = 'none';
+            }
         };
         document.body.appendChild(script);
     }
-
     window.switchCloudCam = switchCloudCam;
     window.addEventListener("load", () => { setTimeout(() => switchCloudCam(0), 500); });
-
-    // ==================== AI FUNCTIONS (old ones removed, only floating AI panel remains) ====================
-    // We keep the AI greeting popup (auto-disappearing) and the floating AI panel.
-
-    // ==================== VOICE RECORDING (for radio) ====================
-    let mediaRecorder = null, audioChunks = [], isRecording = false;
-    async function toggleVoiceRecording() {
-        const btn = document.getElementById("voice-btn");
-        if (!isRecording) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = (event) => { audioChunks.push(event.data); };
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const audioURL = URL.createObjectURL(audioBlob);
-                    addVoiceMessage(STATE.loggedInRanger?.name || "Luminarian", audioURL);
-                    terminalLog("Voice transmission sent");
-                    showAlert("🎙️ Voice message transmitted");
-                };
-                mediaRecorder.start();
-                isRecording = true;
-                btn.textContent = "⏹️ Stop";
-                btn.classList.add("active");
-                showAlert("🎙️ Recording started");
-                terminalLog("Voice recording active");
-            } catch(err) { showAlert("Microphone access denied"); }
-        } else {
-            mediaRecorder.stop();
-            isRecording = false;
-            btn.textContent = "🎙️ Record";
-            btn.classList.remove("active");
-        }
-    }
-    function addVoiceMessage(author, audioURL) {
-        const box = document.getElementById('radioMessages');
-        const div = document.createElement('div');
-        div.style.marginBottom = "10px";
-        div.innerHTML = `<div style="background:rgba(255,255,255,0.06);padding:10px 12px;border-radius:12px;color:white;"><b>🎙️ ${author}</b><br><audio controls style="width:100%; margin-top:6px;"><source src="${audioURL}" type="audio/webm"></audio></div>`;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
-    }
 
     // ==================== FLOATING RADIO ====================
     function sendFloatingRadioMessage() {
@@ -1303,75 +1974,102 @@
         messages.scrollTop = messages.scrollHeight;
         input.value = "";
     }
+    document.getElementById("closeRadioBtn").onclick = () => { document.getElementById("floatingRadioPanel").style.display = "none"; };
+    document.getElementById("openRadioBtn").onclick = () => { document.getElementById("floatingRadioPanel").style.display = "flex"; };
+    document.getElementById("radioInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendFloatingRadioMessage(); });
 
-    // Radio panel event listeners
-    document.getElementById("closeRadioBtn").onclick = () => {
-        document.getElementById("floatingRadioPanel").style.display = "none";
-    };
-    document.getElementById("openRadioBtn").onclick = () => {
-        document.getElementById("floatingRadioPanel").style.display = "flex";
-    };
-    document.getElementById("radioInput").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendFloatingRadioMessage();
-    });
-
-    // ==================== FLOATING AI PANEL ====================
-    document.getElementById("closeAiPanelBtn").onclick = () => {
-        document.getElementById("floatingAiPanel").style.display = "none";
-    };
-    document.getElementById("openAiPanelBtn").onclick = () => {
-        document.getElementById("floatingAiPanel").style.display = "flex";
-    };
-    function sendAiMessage() {
-        const input = document.getElementById("aiUserInput");
-        const chat = document.getElementById("aiChatMessages");
-        if (!input.value.trim()) return;
-        // User message
-        const userMsg = document.createElement("div");
-        userMsg.className = "user-ai-message";
-        userMsg.innerHTML = input.value;
-        chat.appendChild(userMsg);
-        // AI response (simple hardcoded for now)
-        setTimeout(() => {
-            const aiMsg = document.createElement("div");
-            aiMsg.className = "ai-message";
-            aiMsg.innerHTML = `<div class="ai-name">Luminara AI</div><div>Monitoring report: "${input.value}" has been processed.</div>`;
-            chat.appendChild(aiMsg);
-            chat.scrollTop = chat.scrollHeight;
-        }, 700);
-        input.value = "";
-        chat.scrollTop = chat.scrollHeight;
+    // ==================== AI ASSISTANT ====================
+    const aiPanel = document.getElementById("ai-assistant-panel");
+    const openAIButton = document.getElementById("open-ai-btn");
+    const closeAIButton = document.getElementById("close-ai-btn");
+    closeAIButton.addEventListener("click", () => { aiPanel.style.display = "none"; openAIButton.style.display = "block"; });
+    openAIButton.addEventListener("click", () => { aiPanel.style.display = "flex"; openAIButton.style.display = "none"; });
+    const aiMessagesDiv = document.getElementById("ai-messages");
+    const aiUserInput = document.getElementById("ai-user-input");
+    function addUserMessage(text) {
+        const div = document.createElement("div");
+        div.className = "user-bubble";
+        div.textContent = text;
+        aiMessagesDiv.appendChild(div);
+        aiMessagesDiv.scrollTop = aiMessagesDiv.scrollHeight;
     }
-    document.getElementById("aiUserInput").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendAiMessage();
-    });
+    function addAIMessage(text) {
+        const div = document.createElement("div");
+        div.className = "ai-bubble";
+        aiMessagesDiv.appendChild(div);
+        typeWriterEffect(div, text);
+        aiMessagesDiv.scrollTop = aiMessagesDiv.scrollHeight;
+    }
+    function typeWriterEffect(element, text) {
+        let i = 0;
+        const speed = 18;
+        const interval = setInterval(() => {
+            element.innerHTML += text.charAt(i);
+            i++;
+            if (i >= text.length) clearInterval(interval);
+        }, speed);
+    }
+    function getGreeting() {
+        const hour = new Date().getHours();
+        let greeting = "";
+        if (hour < 12) greeting = "🌅 Good morning, Luminarian.";
+        else if (hour < 18) greeting = "☀️ Good afternoon, Ranger.";
+        else greeting = "🌙 Good evening, Patrol Unit.";
+        return `${greeting} Welcome back to the Luminara Monitoring Network. All weather systems, reports, telemetry, aircraft tracking, and surveillance systems are operational.`;
+    }
+    function generateAIResponse(msg) {
+        const lower = msg.toLowerCase();
+        let response = "";
+        if (lower.includes("hello") || lower.includes("hi")) {
+            response = "🦊 Greetings, Luminarian. How may I assist your patrol today?";
+        } else if (lower.includes("weather")) {
+            response = "🌦️ Current telemetry systems are active. You may inspect live wind, UV, rainfall, and radar activity from the dashboard.";
+        } else if (lower.includes("report")) {
+            response = "📋 Reports can be submitted directly through the map by clicking any location.";
+        } else if (lower.includes("aircraft")) {
+            response = "✈️ Aircraft monitoring is linked through OpenSky telemetry feeds.";
+        } else if (lower.includes("volcano")) {
+            response = "🌋 Volcanic monitoring systems can display seismic activity and alert levels.";
+        } else {
+            response = "🛰️ Request acknowledged. Monitoring systems remain active.";
+        }
+        addAIMessage(response);
+    }
+    function sendAIMessage() {
+        const msg = aiUserInput.value.trim();
+        if (!msg) return;
+        addUserMessage(msg);
+        aiUserInput.value = "";
+        setTimeout(() => generateAIResponse(msg), 700);
+    }
+    aiUserInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendAIMessage(); });
+    window.addEventListener("load", () => { setTimeout(() => addAIMessage(getGreeting()), 1200); });
 
-    // ==================== RADIO, TERMINAL, ALERTS ====================
+    // ==================== TERMINAL, ALERTS, LOGIN ====================
     function terminalLog(msg) { const term = document.getElementById('terminal-panel'); const p = document.createElement('p'); p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`; term.appendChild(p); term.scrollTop = term.scrollHeight; if (term.children.length > 60) term.removeChild(term.firstChild); }
     function showAlert(msg) { const banner = document.getElementById('alert-banner'); banner.textContent = msg; banner.style.display = 'block'; terminalLog(`ALERT: ${msg}`); setTimeout(() => banner.style.display = 'none', 6000); }
     function rangerLogin() { let name = document.getElementById('ranger-name-input').value.trim(); if(name) { STATE.loggedInRanger = { name }; localStorage.setItem('ranger_login', JSON.stringify(STATE.loggedInRanger)); document.getElementById('login-status').innerHTML = `✅ ${name}`; terminalLog(`Login: ${name}`); showAlert(`Welcome Luminarian ${name}`); } }
     function simulateEmergency() { showAlert('🚨 EMERGENCY ALERT: Code Red in Sector 7'); addRadioMessage('DISPATCH', 'EMERGENCY ACTIVE'); }
     function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); }
-    function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
-    function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('collapsed'); setTimeout(() => map.invalidateSize(), 350); }
-    function toggleNavMenu() { document.getElementById("navMenu").classList.toggle("active"); }
-    function addRadioMessage(author, msg) {
-        const box = document.getElementById("radioMessages");
-        if (box) {
-            const div = document.createElement('div');
-            div.className = "radio-msg";
-            div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-        }
+    function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); if(telemetryChart) telemetryChart.update(); if(quakeChart) quakeChart.update(); if(volcanoChart) volcanoChart.update(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
+    function addRadioMessage(author, msg) { const box = document.getElementById("radioMessages"); if (box) { const div = document.createElement('div'); div.className = "radio-msg"; div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`; box.appendChild(div); box.scrollTop = box.scrollHeight; } }
+
+    // ==================== SIDEBAR TOGGLE ====================
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
     }
 
-    // ==================== AI GREETING POPUP (auto-disappearing) ====================
+    // ==================== AI GREETING POPUP ====================
     const aiGreetingMessage = `Welcome to Luminara Command System.
 
 Weather monitoring systems online.
 Radar active.
 Live camera feeds connected.
+Air traffic system ready.
+Earthquake detection active.
+Live telemetry active.
+Seismic & Volcano monitor active.
 
 Stay alert, Luminarian.`;
     const aiGreetingElement = document.getElementById("aiGreetingText");
@@ -1394,7 +2092,6 @@ Stay alert, Luminarian.`;
 
     // ==================== MAP CLICK HANDLER ====================
     map.on('click', async (e) => {
-        document.getElementById("navMenu")?.classList.remove("active");
         if (window.innerWidth <= 768) document.getElementById('sidebar').classList.add('collapsed');
         if (STATE.weatherMode) await loadWeatherAtClick(e.latlng.lat, e.latlng.lng);
         else openReportModal(e.latlng.lat, e.latlng.lng);
@@ -1403,13 +2100,13 @@ Stay alert, Luminarian.`;
 
     // EXPOSE ALL FUNCTIONS GLOBALLY
     Object.assign(window, {
-        rangerLogin, simulateEmergency, triggerAIEvent, toggleDarkMode, toggleSidebar,
+        rangerLogin, simulateEmergency, triggerAIEvent, toggleDarkMode,
         centerOnUser, toggleRadar, toggleSatellite, toggleGPSTracking,
         clearWeatherHistory, openReportModalWithCurrentLocation, fillCurrentLocationInModal,
         closeReportModal, saveReport, deleteReportFromModal, editReport, renderReportList,
         toggleWeatherMode, terminalLog, showAlert, addRadioMessage, fetchWeatherData,
-        switchCloudCam, toggleAircraftTracking, toggleNavMenu,
-        toggleVoiceRecording, sendFloatingRadioMessage, sendAiMessage
+        switchCloudCam, toggleAirTraffic, toggleEarthquakes, sendFloatingRadioMessage, sendAIMessage,
+        toggleSidebar
     });
 
     // ==================== INIT ====================
@@ -1419,11 +2116,74 @@ Stay alert, Luminarian.`;
         fetchWeatherData(STATE.userLat, STATE.userLng);
         refreshAllReportMarkers();
         setInterval(() => fetchWeatherData(STATE.userLat, STATE.userLng), 300000);
-        terminalLog('Luminara v30 | Floating AI panel added, old AI assistant removed');
-        showAlert('System ready. Use the floating 🤖 button (bottom-left) to chat with AI.');
+        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded');
+        showAlert('System ready. Use top-left buttons for controls.');
     }
     document.getElementById('report-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('report-modal')) closeReportModal(); });
     init();
+</script>
+
+<!-- Particle + Loading rotation JS -->
+<script>
+    const bgCanvas = document.getElementById("bgEffects");
+    const bgCtx = bgCanvas.getContext("2d");
+    function resizeBG(){
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+    }
+    resizeBG();
+    window.addEventListener("resize", resizeBG);
+    const particles = [];
+    for(let i=0;i<120;i++){
+        particles.push({
+            x:Math.random()*bgCanvas.width,
+            y:Math.random()*bgCanvas.height,
+            r:Math.random()*2.5,
+            dx:(Math.random()-0.5)*0.4,
+            dy:(Math.random()-0.5)*0.4,
+            alpha:Math.random()
+        });
+    }
+    function drawBG(){
+        bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
+        const aurora = bgCtx.createLinearGradient(0,0,bgCanvas.width,bgCanvas.height);
+        aurora.addColorStop(0,"rgba(0,255,180,0.05)");
+        aurora.addColorStop(0.5,"rgba(79,195,247,0.04)");
+        aurora.addColorStop(1,"rgba(180,0,255,0.04)");
+        bgCtx.fillStyle = aurora;
+        bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+        particles.forEach(p=>{
+            bgCtx.beginPath();
+            bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            bgCtx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+            bgCtx.fill();
+            p.x += p.dx;
+            p.y += p.dy;
+            if(p.x < 0) p.x = bgCanvas.width;
+            if(p.x > bgCanvas.width) p.x = 0;
+            if(p.y < 0) p.y = bgCanvas.height;
+            if(p.y > bgCanvas.height) p.y = 0;
+        });
+        requestAnimationFrame(drawBG);
+    }
+    drawBG();
+
+    const loadingMessages = [
+        "Connecting satellite telemetry...",
+        "Initializing atmospheric systems...",
+        "Synchronizing ranger network...",
+        "Loading weather intelligence...",
+        "Activating Luminara AI..."
+    ];
+    let loadIndex = 0;
+    setInterval(()=>{
+        const txt = document.getElementById("loading-text");
+        if(txt){
+            txt.textContent = loadingMessages[loadIndex];
+            loadIndex++;
+            if(loadIndex >= loadingMessages.length) loadIndex = 0;
+        }
+    },1200);
 </script>
 </body>
 </html>
