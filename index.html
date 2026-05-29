@@ -60,6 +60,16 @@
             transition: background var(--transition), color var(--transition);
         }
 
+        /* Emergency mode pulse */
+        .emergency-mode {
+            animation: redPulse 1s infinite;
+        }
+        @keyframes redPulse {
+            0% { box-shadow: 0 0 0 rgba(255,0,0,0); }
+            50% { box-shadow: 0 0 40px rgba(255,0,0,0.4); }
+            100% { box-shadow: 0 0 0 rgba(255,0,0,0); }
+        }
+
         #app-container {
             display: flex;
             height: 100vh;
@@ -383,24 +393,33 @@
         }
 
         /* ================================
-           MOBILE FIXES
+           MOBILE FIXES (enhanced with HUD)
         ================================ */
         @media(max-width:768px){
             #sidebar{
-                width:92vw;
-                min-width:92vw;
+                width:88vw;
+                min-width:88vw;
+                position:fixed;
+                right:0;
+                left:auto;
+                z-index:3000;
             }
             #sidebar-toggle{
                 right:14px;
                 top:14px;
             }
             .map-overlay-top{
-                top:10px;
-                left:10px;
-                gap:6px;
+                bottom:12px;
+                top:auto;
+                left:50%;
+                transform:translateX(-50%);
+                flex-wrap:nowrap;
+                overflow-x:auto;
+                width:95vw;
             }
             .map-btn{
-                padding:6px 10px;
+                min-width:max-content;
+                padding:6px 12px;
                 font-size:12px;
             }
             #windy-container{
@@ -550,6 +569,144 @@
         .user-status{
             font-size:11px;
             color:#66ff99;
+        }
+
+        /* ================================
+           OCEAN TELEMETRY
+        ================================ */
+        .ocean-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+        }
+        .ocean-card{
+            padding:14px;
+            border-radius:14px;
+            background:rgba(255,255,255,0.05);
+            text-align:center;
+            color:white;
+        }
+
+        /* ================================
+           INCIDENT TIMELINE
+        ================================ */
+        #timelineFeed{
+            max-height:180px;
+            overflow-y:auto;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+        .timeline-item{
+            padding:10px;
+            border-radius:12px;
+            background:rgba(255,255,255,0.05);
+            color:white;
+            font-size:12px;
+        }
+
+        /* ================================
+           THREAT LEGEND
+        ================================ */
+        .threat-legend{
+            position:absolute;
+            bottom:20px;
+            right:20px;
+            z-index:1000;
+            background:rgba(5,15,25,0.92);
+            padding:12px;
+            border-radius:16px;
+            color:white;
+            border:1px solid rgba(0,255,255,0.12);
+            backdrop-filter:blur(12px);
+        }
+        .threat-legend span{
+            display:inline-block;
+            width:12px;
+            height:12px;
+            border-radius:50%;
+            margin-right:8px;
+        }
+        .safe{background:#00ff99;}
+        .warn{background:#ffd54f;}
+        .danger{background:#ff5252;}
+
+        /* ================================
+           AI SUMMARY PANEL
+        ================================ */
+        #aiSummaryPanel{
+            position:absolute;
+            top:80px;
+            right:20px;
+            width:280px;
+            padding:16px;
+            border-radius:18px;
+            background:rgba(5,15,25,0.92);
+            color:white;
+            z-index:1000;
+            border:1px solid rgba(0,255,255,0.12);
+            backdrop-filter:blur(12px);
+            font-size:13px;
+        }
+
+        /* ================================
+           RADAR SWEEP
+        ================================ */
+        #radarSweep{
+            position:absolute;
+            inset:0;
+            background:linear-gradient(90deg, transparent, rgba(0,255,255,0.06), transparent);
+            z-index:400;
+            pointer-events:none;
+            animation:radarSweep 5s linear infinite;
+        }
+        @keyframes radarSweep{
+            from{ transform:translateX(-100%); }
+            to{ transform:translateX(100%); }
+        }
+
+        /* ================================
+           ANIMATED GLOBE (enhanced)
+        ================================ */
+        #globeWidget{
+            position:fixed;
+            bottom:20px;
+            right:20px;
+            width:70px;
+            height:70px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:40px;
+            background:rgba(0,255,255,0.08);
+            animation:spinGlobe 12s linear infinite;
+            z-index:5000;
+            backdrop-filter:blur(8px);
+            cursor:pointer;
+        }
+        @keyframes spinGlobe{
+            from{ transform:rotate(0deg); }
+            to{ transform:rotate(360deg); }
+        }
+
+        /* ================================
+           LUMINARIAN PROFILE CARD
+        ================================ */
+        .luminarian-card{
+            padding:14px;
+            border-radius:18px;
+            background:linear-gradient(135deg, rgba(0,255,255,0.08), rgba(0,120,255,0.05));
+            color:white;
+            margin-bottom:10px;
+        }
+        .luminarian-rank{
+            font-size:12px;
+            opacity:0.8;
+        }
+        .luminarian-name{
+            font-size:18px;
+            font-weight:700;
         }
 
         /* Tooltip */
@@ -1139,50 +1296,6 @@
             0%,100%{ box-shadow:0 0 25px rgba(79,195,247,0.18); }
             50%{ box-shadow:0 0 40px rgba(79,195,247,0.4); }
         }
-        /* =========================
-           GLOBE WIDGET
-        ========================= */
-        #globe-widget{
-            position:fixed;
-            bottom:24px;
-            left:24px;
-            width:90px;
-            height:90px;
-            border-radius:50%;
-            background:rgba(10,15,28,0.75);
-            backdrop-filter:blur(12px);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:46px;
-            z-index:5000;
-            animation:spinGlobe 12s linear infinite;
-            box-shadow:0 0 30px rgba(79,195,247,0.25);
-            cursor:pointer;
-        }
-        @keyframes spinGlobe{
-            from{ transform:rotate(0deg); }
-            to{ transform:rotate(360deg); }
-        }
-        /* =========================
-           LIVE WAVE TELEMETRY
-        ========================= */
-        .chart-container{
-            position:relative;
-            overflow:hidden;
-        }
-        .chart-container::after{
-            content:'';
-            position:absolute;
-            inset:0;
-            background:linear-gradient(90deg, transparent, rgba(79,195,247,0.08), transparent);
-            animation:telemetryScan 3s linear infinite;
-            pointer-events:none;
-        }
-        @keyframes telemetryScan{
-            from{ transform:translateX(-100%); }
-            to{ transform:translateX(100%); }
-        }
 
         /* =========================
            OWNER PANEL
@@ -1305,6 +1418,17 @@
                 <button class="btn small accent3" onclick="triggerAIEvent()">🎲 AI Event</button>
                 <button class="btn small" onclick="toggleDarkMode()">🌙 Dark</button>
                 <button class="btn small danger" onclick="simulateEmergency()">🚨 Test Alert</button>
+                <button class="btn small danger" onclick="activateEmergencyMode()">🚨 Emergency Mode</button>
+                <button class="btn small" onclick="toggleAmbient()">🔊 Ambient</button>
+                <button class="btn small" onclick="placeBeacon('distress')">🚨 Place Beacon</button>
+            </div>
+        </div>
+
+        <!-- Luminarian Profile Card -->
+        <div class="sidebar-section">
+            <div class="luminarian-card">
+                <div class="luminarian-rank">🦊 Sentinel</div>
+                <div class="luminarian-name">Kaito</div>
             </div>
         </div>
 
@@ -1330,6 +1454,21 @@
             <h3>☀️ UV Detection</h3>
             <div class="weather-card"><div class="val" id="uv-index">--</div><div class="lbl">UV Index</div></div>
             <div id="uv-status" style="margin-top:8px;padding:8px;border-radius:8px;text-align:center;font-weight:bold;background:#222;color:white;">Waiting for UV data...</div>
+        </div>
+
+        <!-- OCEAN TELEMETRY PANEL -->
+        <div class="sidebar-section">
+            <h3>🌊 Ocean Telemetry</h3>
+            <div class="ocean-grid">
+                <div class="ocean-card">
+                    <div id="waveHeight">1.2m</div>
+                    <span>Wave Height</span>
+                </div>
+                <div class="ocean-card">
+                    <div id="tideLevel">High</div>
+                    <span>Tide</span>
+                </div>
+            </div>
         </div>
 
         <!-- LIVE TELEMETRY PANEL -->
@@ -1373,6 +1512,12 @@
             <div id="report-list" style="max-height:200px; overflow-y:auto;"></div>
         </div>
 
+        <!-- INCIDENT TIMELINE -->
+        <div class="sidebar-section">
+            <h3>📖 Incident Timeline</h3>
+            <div id="timelineFeed"></div>
+        </div>
+
         <div class="sidebar-section"><h3>💻 Dispatch Terminal</h3>
             <div id="terminal-panel"><p class="line">LUMINARA-OS v36 — AI Toggle Button fixed</p></div>
         </div>
@@ -1395,7 +1540,7 @@
             </div>
         </div>
 
-        <!-- NEW: WINDY SIDEBAR PANEL -->
+        <!-- WINDY SIDEBAR PANEL -->
         <div class="sidebar-section">
             <h3>🌦️ Windy Weather Panel</h3>
             <div class="windy-sidebar-buttons">
@@ -1442,8 +1587,17 @@
     <div id="map-container">
         <div id="map"></div>
         <div class="radar-scan"></div>
+        <div id="radarSweep"></div> <!-- Radar sweep animation -->
         <div class="map-overlay-bottom" id="coord-display">📍 Click map: Report (normal) | Toggle Weather Mode for weather‑at‑click</div>
         <div class="alert-banner" id="alert-banner" onclick="this.style.display='none'">⚠️ ALERT</div>
+        <!-- Threat Legend -->
+        <div class="threat-legend">
+            <div><span class="safe"></span> Safe</div>
+            <div><span class="warn"></span> Warning</div>
+            <div><span class="danger"></span> Danger</div>
+        </div>
+        <!-- AI Summary Panel -->
+        <div id="aiSummaryPanel">AI ANALYSIS LOADING...</div>
     </div>
 
     <!-- TOP MAP BUTTONS (GPS, RADAR, SATELLITE, WEATHER, TRAFFIC, QUAKES) -->
@@ -1499,6 +1653,14 @@
         <div class="ai-header">🌙 Lumizia AI</div>
         <div id="aiGreetingText"></div>
     </div>
+
+    <!-- Ambient Audio -->
+    <audio id="ambientAudio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Animated Globe Widget -->
+    <div id="globeWidget">🌍</div>
 </div>
 
 <!-- Report Modal -->
@@ -1539,9 +1701,6 @@
         </div>
     </div>
 </div>
-
-<!-- Animated Globe Widget -->
-<div id="globe-widget">🌍</div>
 
 <!-- Particle + Aurora Canvas -->
 <canvas id="bgEffects"></canvas>
@@ -1682,6 +1841,119 @@
         document.getElementById('coord-display').innerHTML = STATE.weatherMode ? '🌤️ WEATHER MODE: Click map for weather' : '📍 Click map: Report (normal)';
     }
 
+    // ==================== THREAT HEATMAP ====================
+    const threatZones = [
+        {lat:14.5,lng:121.0,risk:'danger'},
+        {lat:13.4,lng:122.8,risk:'warn'},
+        {lat:11.2,lng:124.5,risk:'safe'}
+    ];
+    function loadThreatHeatmap(){
+        threatZones.forEach(zone=>{
+            const colors={safe:'#00ff99', warn:'#ffd54f', danger:'#ff5252'};
+            L.circle([zone.lat, zone.lng],{
+                radius:35000,
+                color:colors[zone.risk],
+                fillColor:colors[zone.risk],
+                fillOpacity:0.25
+            }).addTo(map);
+        });
+    }
+    loadThreatHeatmap();
+
+    // ==================== AI PATROL UNITS ====================
+    const aiUnits = {
+        AETHER:["Wind pressure increasing nearby.","Heavy rain patterns detected."],
+        VIGIL:["Emergency signal received.","Critical ranger report nearby."],
+        ORION:["Aircraft activity increasing.","Low altitude flight detected."],
+        TIDAL:["Ocean waves rising.","Strong sea current detected."],
+        NOVA:["Seismic activity increasing.","Volcanic tremors detected."]
+    };
+    function randomAIMessage(){
+        const names = Object.keys(aiUnits);
+        const unit = names[Math.floor(Math.random()*names.length)];
+        const msgs = aiUnits[unit];
+        const msg = msgs[Math.floor(Math.random()*msgs.length)];
+        showAlert(`🤖 ${unit}: ${msg}`);
+    }
+    setInterval(randomAIMessage,45000);
+
+    // ==================== RANGER BEACON SYSTEM ====================
+    function placeBeacon(type){
+        const icons={distress:'🚨', camp:'🏕️', fire:'🔥', storm:'🌪️'};
+        const icon = L.divIcon({html:`<div style="font-size:24px;">${icons[type]||'📍'}</div>`, iconSize:[24,24]});
+        L.marker([STATE.userLat, STATE.userLng],{icon}).addTo(map).bindPopup(`${type.toUpperCase()} BEACON`).openPopup();
+        addTimelineEvent(`Beacon placed: ${type} at current location`);
+        showAlert(`📍 ${type.toUpperCase()} beacon placed`);
+    }
+
+    // ==================== OCEAN TELEMETRY ====================
+    function updateOceanData(){
+        const wave = (Math.random() * 3 + 0.5).toFixed(1);
+        const tides = ['Low', 'Mid', 'High'];
+        const tide = tides[Math.floor(Math.random()*3)];
+        document.getElementById('waveHeight').innerHTML = wave + 'm';
+        document.getElementById('tideLevel').innerHTML = tide;
+        setTimeout(updateOceanData, 30000);
+    }
+    updateOceanData();
+
+    // ==================== AIRCRAFT TRAILS ====================
+    function createAircraftTrail(lat,lng){
+        const trail = L.polyline([[lat,lng],[lat+0.2,lng+0.2]],{color:'#00ffff', weight:2, opacity:0.7}).addTo(map);
+        setTimeout(()=>{ map.removeLayer(trail); },15000);
+    }
+    // Example - can be called on new aircraft detection
+
+    // ==================== SMART AI SUMMARY ====================
+    function updateAISummary(){
+        const reports = STATE.reports.length;
+        const text = `${reports} active ranger reports detected. Weather systems stable. Monitoring aircraft and seismic data.`;
+        document.getElementById('aiSummaryPanel').innerText = text;
+    }
+    setInterval(updateAISummary,10000);
+
+    // ==================== INCIDENT TIMELINE ====================
+    function addTimelineEvent(text){
+        const feed = document.getElementById('timelineFeed');
+        feed.innerHTML = `<div class="timeline-item">[${new Date().toLocaleTimeString()}] ${text}</div>` + feed.innerHTML;
+        if(feed.children.length > 20) feed.removeChild(feed.lastChild);
+    }
+    // hook into report saving
+    const originalSaveReport = saveReport;
+    window.saveReport = function(){
+        originalSaveReport();
+        addTimelineEvent(`Report saved: ${document.getElementById('report-title').value}`);
+    };
+
+    // ==================== DYNAMIC DAY/NIGHT MODE ====================
+    function autoTheme(){
+        const hour = new Date().getHours();
+        if(hour >= 18 || hour <= 5){
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
+    }
+    setInterval(autoTheme,60000);
+    autoTheme();
+
+    // ==================== AMBIENT AUDIO TOGGLE ====================
+    let ambientOn = false;
+    function toggleAmbient(){
+        const audio = document.getElementById('ambientAudio');
+        ambientOn = !ambientOn;
+        if(ambientOn) audio.play().catch(e=>console.log("Audio play failed:",e));
+        else audio.pause();
+        showAlert(`Ambient audio ${ambientOn?'ON':'OFF'}`);
+    }
+
+    // ==================== EMERGENCY BROADCAST MODE ====================
+    function activateEmergencyMode(){
+        document.body.classList.toggle('emergency-mode');
+        showAlert('🚨 NATIONAL EMERGENCY MODE ACTIVE');
+        addTimelineEvent('EMERGENCY MODE ACTIVATED');
+    }
+
     // ==================== EARTHQUAKE SYSTEM ====================
     async function fetchEarthquakes() {
         try {
@@ -1713,6 +1985,7 @@
                 const marker = L.marker([lat, lng], { icon: quakeIcon }).addTo(map).bindPopup(`<b>🌎 Earthquake</b><br><br>📍 ${place}<br>💥 Magnitude: ${mag}<br>📏 Depth: ${depth} km<br>🕒 ${time}`);
                 STATE.earthquakeMarkers.push(marker);
                 if (mag >= 6) showAlert(`⚠ Major earthquake detected (${mag})`);
+                if (mag >= 4) createAircraftTrail(lat,lng); // use trail as effect
             });
             terminalLog(`Earthquakes loaded: ${data.features.length}`);
         } catch (err) {
@@ -1791,6 +2064,8 @@
                     Speed: ${velocity ? Math.round(velocity * 3.6) : "Unknown"} km/h
                 `);
                 STATE.airTrafficMarkers.push(marker);
+                // create trail effect occasionally
+                if(Math.random() < 0.2) createAircraftTrail(lat,lng);
             });
             terminalLog(`Aircraft tracked: ${data.states.length}`);
         } catch (err) {
@@ -1997,6 +2272,7 @@
         localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports));
         refreshAllReportMarkers(); renderReportList(); closeReportModal(); terminalLog(`Report ${editId?'updated':'saved'}: ${title}`); showAlert(`Report saved: ${title}`);
         if(report.danger === 'critical') showAlert(`🚨 CRITICAL REPORT: ${title}`);
+        addTimelineEvent(`Report saved: ${title}`);
     }
     function deleteReportFromModal() { const id = document.getElementById('report-edit-id').value; if(id && confirm('Delete?')) { STATE.reports = STATE.reports.filter(r => r.id !== id); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); renderReportList(); closeReportModal(); terminalLog('Report deleted'); showAlert('Report deleted'); } }
     function editReport(id) {
@@ -2063,7 +2339,6 @@
         const status = document.getElementById("cloud-status");
         if (!container || !status) return;
         status.textContent = `STATUS: LOADING ${cam.name}...`;
-        // Preserve the cam-overlay div while replacing inner content
         const overlay = container.querySelector('.cam-overlay');
         container.innerHTML = `<div class="cam-overlay">● LIVE CCTV</div><div id="windy-webcam-container"><a name="windy-webcam-timelapse-player" data-id="${cam.id}" data-play="day" data-loop="0" data-auto-play="1" data-force-full-screen-on-overlay-play="0" data-interactive="1" href="https://windy.com/webcams/${cam.id}" target="_blank">${cam.name}</a></div>`;
         const oldScript = document.getElementById("windy-script");
@@ -2076,7 +2351,6 @@
             status.textContent = `STATUS: LIVE - ${cam.name}`; 
             terminalLog(`Windy cam loaded: ${cam.name}`); 
             showAlert(`📹 ${cam.name} webcam loaded`);
-            // Ensure the iframe inside windy-webcam-container gets proper styling
             const iframe = document.querySelector('#windy-container iframe');
             if (iframe) {
                 iframe.style.width = '100%';
@@ -2214,7 +2488,6 @@
             document.getElementById('login-status').innerHTML = `✅ ${name}`;
             terminalLog(`Login: ${name}`);
             showAlert(`Welcome Luminarian ${name}`);
-            // Add to active users list
             if(!activeUsers.includes(name)){
                 activeUsers.push(name);
                 localStorage.setItem("luminara_users", JSON.stringify(activeUsers));
@@ -2224,7 +2497,7 @@
     }
 
     function simulateEmergency() { showAlert('🚨 EMERGENCY ALERT: Code Red in Sector 7'); addRadioMessage('DISPATCH', 'EMERGENCY ACTIVE'); }
-    function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); }
+    function triggerAIEvent() { const ev = { title:'AI Scout Report', type:'wildlife', danger:'medium', desc:'Automated alert', lat:STATE.userLat+(Math.random()-0.5)*0.04, lng:STATE.userLng+(Math.random()-0.5)*0.04 }; const report={ id:Date.now().toString(), title:ev.title, desc:ev.desc, type:ev.type, danger:ev.danger, weather:'Sunny', temperature:'', windSpeed:'', lat:ev.lat, lng:ev.lng, timestamp:new Date().toISOString(), author:'Lumizia AI' }; STATE.reports.unshift(report); localStorage.setItem('ranger_reports', JSON.stringify(STATE.reports)); refreshAllReportMarkers(); map.setView([ev.lat,ev.lng],13); showAlert(`🤖 AI Event: ${ev.title}`); terminalLog(`AI event generated`); addTimelineEvent(`AI event: ${ev.title}`); }
     function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); if(telemetryChart) telemetryChart.update(); if(quakeChart) quakeChart.update(); if(volcanoChart) volcanoChart.update(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
     function addRadioMessage(author, msg) { const box = document.getElementById("radioMessages"); if (box) { const div = document.createElement('div'); div.className = "radio-msg"; div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`; box.appendChild(div); box.scrollTop = box.scrollHeight; } }
 
@@ -2286,7 +2559,7 @@ Stay alert, Luminarian.`;
         closeReportModal, saveReport, deleteReportFromModal, editReport, renderReportList,
         toggleWeatherMode, terminalLog, showAlert, addRadioMessage, fetchWeatherData,
         switchCloudCam, toggleAirTraffic, toggleEarthquakes, sendFloatingRadioMessage, sendAIMessage,
-        toggleSidebar, setWindyLayer
+        toggleSidebar, setWindyLayer, placeBeacon, toggleAmbient, activateEmergencyMode
     });
 
     // ==================== INIT ====================
@@ -2295,10 +2568,11 @@ Stay alert, Luminarian.`;
         startGPSTracking();
         fetchWeatherData(STATE.userLat, STATE.userLng);
         refreshAllReportMarkers();
-        updateUserList();  // Initialize user list
+        updateUserList();
         setInterval(() => fetchWeatherData(STATE.userLat, STATE.userLng), 300000);
-        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded | User list & windy sidebar panel added | Removed mini windy map');
+        terminalLog('Luminara v36 | Advanced feature pack integrated');
         showAlert('System ready. Use top-left buttons for controls.');
+        addTimelineEvent('System initialized');
     }
     document.getElementById('report-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('report-modal')) closeReportModal(); });
     init();
