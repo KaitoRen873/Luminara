@@ -406,6 +406,9 @@
             #windy-container{
                 height:260px !important;
             }
+            #windySidebarWindow{
+                height:260px;
+            }
         }
 
         /* ================================
@@ -446,106 +449,61 @@
         }
 
         /* ================================
-           MINI WINDY CAMERA WINDOW
+           WINDY SIDEBAR PANEL
         ================================ */
-        #miniCamWindow{
-            position:fixed;
-            bottom:24px;
-            left:24px;
-            width:360px;
-            height:240px;
-            background:rgba(5,15,25,0.96);
-            border-radius:18px;
+        #windySidebarWindow{
+            width:100%;
+            height:320px;
             overflow:hidden;
-            z-index:5000;
-            border:1px solid rgba(0,255,255,0.15);
-            box-shadow:0 0 25px rgba(0,255,255,0.15);
-            backdrop-filter:blur(12px);
-            display:none;
-            animation:miniCamOpen 0.35s ease;
+            border-radius:18px;
+            margin-top:10px;
+            border:1px solid rgba(0,255,255,0.12);
+            background:rgba(5,15,25,0.92);
+            box-shadow:0 0 20px rgba(0,255,255,0.08);
+            position:relative;
         }
 
-        @keyframes miniCamOpen{
-            from{
-                transform:translateY(30px) scale(0.9);
-                opacity:0;
-            }
-            to{
-                transform:translateY(0) scale(1);
-                opacity:1;
-            }
+        #windySidebarWindow::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(120deg, rgba(0,255,255,0.04), transparent, rgba(0,120,255,0.04));
+            pointer-events:none;
+            z-index:2;
         }
 
-        #miniCamHeader{
-            height:42px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:0 12px;
-            background:linear-gradient(90deg, rgba(0,255,255,0.12), rgba(0,100,255,0.08));
-            color:white;
-            font-size:13px;
-            font-weight:700;
-            letter-spacing:1px;
+        #windySidebarFrame{
+            width:100%;
+            height:100%;
+            border:none;
         }
 
-        .miniCamButtons{
+        .windy-sidebar-buttons{
             display:flex;
             gap:6px;
+            flex-wrap:wrap;
         }
 
-        .miniCamButtons button{
-            width:26px;
-            height:26px;
+        .windy-sidebar-buttons button{
+            flex:1;
+            padding:8px 10px;
             border:none;
-            border-radius:8px;
+            border-radius:12px;
             cursor:pointer;
-            background:rgba(255,255,255,0.08);
             color:white;
-            transition:0.2s;
-        }
-
-        .miniCamButtons button:hover{
-            background:rgba(0,255,255,0.2);
-        }
-
-        #miniCamFrame{
-            width:100%;
-            height:calc(100% - 42px);
-            border:none;
-        }
-
-        #openMiniCamBtn{
-            position:fixed;
-            bottom:24px;
-            left:24px;
-            z-index:4999;
-            padding:12px 18px;
-            border:none;
-            border-radius:14px;
-            background:linear-gradient(135deg, rgba(0,255,255,0.25), rgba(0,120,255,0.2));
-            color:white;
+            font-size:12px;
             font-weight:700;
-            cursor:pointer;
-            box-shadow:0 0 18px rgba(0,255,255,0.15);
+            background:linear-gradient(135deg, rgba(0,255,255,0.12), rgba(0,120,255,0.08));
             transition:0.25s ease;
         }
 
-        #openMiniCamBtn:hover{
+        .windy-sidebar-buttons button:hover{
             transform:translateY(-2px);
-        }
-
-        @media(max-width:768px){
-            #miniCamWindow{
-                width:92vw;
-                height:220px;
-                left:4vw;
-                bottom:18px;
-            }
+            box-shadow:0 0 16px rgba(0,255,255,0.14);
         }
 
         /* ================================
-           MINI WINDY MAP WINDOW
+           MINI WINDY MAP WINDOW (KEPT)
         ================================ */
         #windyMiniWindow{
             position:fixed;
@@ -1529,6 +1487,20 @@
             </div>
         </div>
 
+        <!-- NEW: WINDY SIDEBAR PANEL -->
+        <div class="sidebar-section">
+            <h3>🌦️ Windy Weather Panel</h3>
+            <div class="windy-sidebar-buttons">
+                <button onclick="setWindyLayer('wind')">💨 Wind</button>
+                <button onclick="setWindyLayer('radar')">🌧️ Radar</button>
+                <button onclick="setWindyLayer('clouds')">☁️ Clouds</button>
+                <button onclick="setWindyLayer('temp')">🌡️ Temp</button>
+            </div>
+            <div id="windySidebarWindow">
+                <iframe id="windySidebarFrame" src="https://embed.windy.com/embed2.html?lat=14.5995&lon=120.9842&zoom=5&level=surface&overlay=wind&menu=&message=true&marker=true&calendar=&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default" allowfullscreen></iframe>
+            </div>
+        </div>
+
         <!-- ACTIVE LUMINARIANS LIST -->
         <div class="sidebar-section">
             <h3>👥 ACTIVE LUMINARIANS</h3>
@@ -1663,20 +1635,7 @@
 <!-- Animated Globe Widget -->
 <div id="globe-widget">🌍</div>
 
-<!-- Mini Windy Camera Window -->
-<div id="miniCamWindow">
-    <div id="miniCamHeader">
-        <span>📹 LIVE WINDY CAM</span>
-        <div class="miniCamButtons">
-            <button onclick="minimizeMiniCam()">—</button>
-            <button onclick="closeMiniCam()">✕</button>
-        </div>
-    </div>
-    <iframe id="miniCamFrame" src="https://windy.com/webcams/1706632696" allowfullscreen></iframe>
-</div>
-<button id="openMiniCamBtn" onclick="openMiniCam()">📹 CAM</button>
-
-<!-- MINI WINDY WEATHER MAP WINDOW -->
+<!-- MINI WINDY WEATHER MAP WINDOW (KEPT) -->
 <div id="windyMiniWindow">
     <div id="windyMiniHeader">
         <span>🌍 Windy Weather Map</span>
@@ -2374,17 +2333,10 @@
     function toggleDarkMode() { STATE.darkMode = !STATE.darkMode; document.body.classList.toggle('dark', STATE.darkMode); localStorage.setItem('ranger_darkmode', STATE.darkMode); if(STATE.chart) updateWeatherChart(); if(telemetryChart) telemetryChart.update(); if(quakeChart) quakeChart.update(); if(volcanoChart) volcanoChart.update(); showAlert(`Theme: ${STATE.darkMode?'Dark':'Light'}`); }
     function addRadioMessage(author, msg) { const box = document.getElementById("radioMessages"); if (box) { const div = document.createElement('div'); div.className = "radio-msg"; div.innerHTML = `<div class="radio-author">${author}</div><div>${msg}</div>`; box.appendChild(div); box.scrollTop = box.scrollHeight; } }
 
-    // ==================== MINI CAM FUNCTIONS ====================
-    function openMiniCam(){
-        document.getElementById("miniCamWindow").style.display = "block";
-        document.getElementById("openMiniCamBtn").style.display = "none";
-    }
-    function closeMiniCam(){
-        document.getElementById("miniCamWindow").style.display = "none";
-        document.getElementById("openMiniCamBtn").style.display = "block";
-    }
-    function minimizeMiniCam(){
-        document.getElementById("miniCamWindow").style.height = "42px";
+    // ==================== WINDY SIDEBAR LAYERS ====================
+    function setWindyLayer(layer){
+        const frame = document.getElementById("windySidebarFrame");
+        frame.src = `https://embed.windy.com/embed2.html?lat=14.5995&lon=120.9842&zoom=5&level=surface&overlay=${layer}&menu=&message=true&marker=true&calendar=&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default`;
     }
 
     // ==================== MINI WINDY WEATHER MAP FUNCTIONS ====================
@@ -2453,8 +2405,7 @@ Stay alert, Luminarian.`;
         closeReportModal, saveReport, deleteReportFromModal, editReport, renderReportList,
         toggleWeatherMode, terminalLog, showAlert, addRadioMessage, fetchWeatherData,
         switchCloudCam, toggleAirTraffic, toggleEarthquakes, sendFloatingRadioMessage, sendAIMessage,
-        toggleSidebar, openMiniCam, closeMiniCam, minimizeMiniCam,
-        openWindyWindow, closeWindy, minimizeWindy
+        toggleSidebar, openWindyWindow, closeWindy, minimizeWindy, setWindyLayer
     });
 
     // ==================== INIT ====================
@@ -2465,7 +2416,7 @@ Stay alert, Luminarian.`;
         refreshAllReportMarkers();
         updateUserList();  // Initialize user list
         setInterval(() => fetchWeatherData(STATE.userLat, STATE.userLng), 300000);
-        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded | Mini cam & user list & mini windy map added');
+        terminalLog('Luminara v36 | Right sidebar + toggle button integrated | Windycam upgraded | User list & windy sidebar panel added');
         showAlert('System ready. Use top-left buttons for controls.');
     }
     document.getElementById('report-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('report-modal')) closeReportModal(); });
